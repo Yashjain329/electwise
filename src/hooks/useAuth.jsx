@@ -16,13 +16,16 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
-    // Handle redirect result after page reload (for mobile or blocked popups)
+    // Handle redirect result after page reload (mobile / popup-blocked)
     getRedirectResult(auth)
       .then((result) => {
         if (result?.user) setUser(result.user);
       })
       .catch((err) => {
-        console.error('Redirect result error:', err);
+        // Ignore "no redirect" non-errors
+        if (err.code !== 'auth/no-auth-event') {
+          console.error('Redirect result error:', err.code, err.message);
+        }
       });
 
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -35,28 +38,44 @@ export function AuthProvider({ children }) {
   const signIn = async () => {
     setAuthError(null);
     try {
-      // Try popup first (works on desktop)
-      await signInWithPopup(auth, googleProvider);
+      // Try popup first (best UX on desktop)
+      const result = await signInWithPopup(auth, googleProvider);
+      return result.user;
     } catch (err) {
-      console.warn('Popup blocked or failed, falling back to redirect:', err.code);
-      // Fallback to redirect for mobile / popup-blocked environments
-      if (
-        err.code === 'auth/popup-blocked' ||
-        err.code === 'auth/popup-closed-by-user' ||
-        err.code === 'auth/cancelled-popup-request' ||
-        err.code === 'auth/operation-not-supported-in-this-environment'
-      ) {
+      console.warn('Popup auth failed:', err.code);
+
+      const shouldRedirect = [
+        'auth/popup-blocked',
+        'auth/popup-closed-by-user',
+        'auth/cancelled-popup-request',
+        'auth/operation-not-supported-in-this-environment',
+        'auth/web-storage-unsupported',
+      ].includes(err.code);
+
+      if (shouldRedirect) {
         try {
+          // Redirect flow — page will reload after Google sign-in
           await signInWithRedirect(auth, googleProvider);
+          return null; // Will complete on reload via getRedirectResult
         } catch (redirectErr) {
           console.error('Redirect sign-in failed:', redirectErr);
-          setAuthError(redirectErr.message);
+          setAuthError(
+            'Sign-in failed. Please ensure pop-ups are allowed or try a different browser.'
+          );
           throw redirectErr;
         }
-      } else {
-        setAuthError(err.message);
-        throw err;
       }
+
+      // Unauthorized domain — most common cause of "Sign in failed"
+      if (err.code === 'auth/unauthorized-domain') {
+        const msg =
+          'This domain is not authorized in Firebase. Add it to Firebase Console → Authentication → Settings → Authorized domains.';
+        setAuthError(msg);
+        throw new Error(msg);
+      }
+
+      setAuthError(err.message);
+      throw err;
     }
   };
 

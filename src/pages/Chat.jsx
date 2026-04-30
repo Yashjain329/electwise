@@ -15,24 +15,34 @@ const suggestions = [
 
 const SYSTEM_PROMPT = `You are ElectWise, a civic education assistant for Indian elections. Answer questions about election processes, voter rights, ECI procedures, and democratic participation in India. Be clear, factual, and concise. Use bullet points where appropriate. If asked anything unrelated, politely redirect to election topics.`;
 
-// Try multiple Gemini models in order of preference
+// Current Gemini models in priority order (updated April 2026)
 const MODELS = [
   'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b',
+  'gemini-2.0-flash-lite',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-flash-8b-latest',
+  'gemini-1.5-pro-latest',
 ];
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function callGemini(question, history, apiKey) {
   const contents = [
-    ...history.filter((_, i) => i > 0).map(m => ({
+    ...history.filter((_, i) => i > 0).map((m) => ({
       role: m.role === 'user' ? 'user' : 'model',
       parts: [{ text: m.text }],
     })),
     { role: 'user', parts: [{ text: question }] },
   ];
 
-  for (const model of MODELS) {
+  const errors = [];
+
+  for (let attempt = 0; attempt < MODELS.length; attempt++) {
+    const model = MODELS[attempt];
     try {
+      // Small backoff between attempts
+      if (attempt > 0) await sleep(600 * attempt);
+
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         {
@@ -46,21 +56,47 @@ async function callGemini(question, history, apiKey) {
         }
       );
 
-      if (res.status === 429 || res.status === 503) continue; // try next model
+      // Rate-limited or overloaded — try next model
+      if (res.status === 429 || res.status === 503 || res.status === 500) {
+        errors.push(`${model}: HTTP ${res.status}`);
+        continue;
+      }
+
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `API error ${res.status}`);
+        const msg = err?.error?.message || `HTTP ${res.status}`;
+        // Model not found — skip silently
+        if (res.status === 404 || msg.includes('not found')) {
+          errors.push(`${model}: not found`);
+          continue;
+        }
+        throw new Error(msg);
       }
 
       const data = await res.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) return { text, model };
+
+      // Empty response — try next
+      errors.push(`${model}: empty response`);
     } catch (e) {
-      if (e.message?.includes('fetch')) throw e; // network error, stop
-      // otherwise try next model
+      // Network error — stop immediately
+      if (
+        e.name === 'TypeError' &&
+        (e.message.includes('fetch') || e.message.includes('network'))
+      ) {
+        throw new Error(
+          'Network error. Please check your internet connection and try again.'
+        );
+      }
+      errors.push(`${model}: ${e.message}`);
     }
   }
-  throw new Error('All Gemini models are currently busy. Please try again in a moment.');
+
+  console.error('All Gemini models failed:', errors);
+  throw new Error(
+    'The AI service is temporarily unavailable. Please try again in a moment.'
+  );
 }
 
 export default function Chat() {
@@ -68,7 +104,10 @@ export default function Chat() {
   const { addToast } = useToast();
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const [messages, setMessages] = useState([
-    { role: 'ai', text: "Hello! I'm **ElectWise AI**, your civic education assistant. Ask me anything about India's election process, voter rights, or democratic procedures. How can I help you today?" },
+    {
+      role: 'ai',
+      text: "Hello! I'm **ElectWise AI**, your civic education assistant. Ask me anything about India's election process, voter rights, or democratic procedures. How can I help you today?",
+    },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -90,32 +129,44 @@ export default function Chat() {
     setError(null);
 
     if (!apiKey) {
-      setError('Gemini API key is not configured. Please check your .env file.');
+      setError(
+        'Gemini API key is not configured. The app may need to be redeployed with updated secrets.'
+      );
       return;
     }
 
     const userMsg = { role: 'user', text: question };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
     try {
-      const { text: answer, model } = await callGemini(question, [...messages, userMsg], apiKey);
+      const { text: answer, model } = await callGemini(
+        question,
+        [...messages, userMsg],
+        apiKey
+      );
       const aiMsg = { role: 'ai', text: answer };
-      setMessages(prev => [...prev, aiMsg]);
+      setMessages((prev) => [...prev, aiMsg]);
 
       // Save to Firestore (non-blocking)
       if (user) {
         addDoc(collection(db, 'chatHistory', user.uid, 'messages'), {
-          question, answer, model, createdAt: serverTimestamp(),
+          question,
+          answer,
+          model,
+          createdAt: serverTimestamp(),
         }).catch(() => {});
       }
     } catch (err) {
       const msg = err.message || 'Failed to get a response.';
       setError(msg);
-      setMessages(prev => [...prev, {
-        role: 'ai',
-        text: `❌ **Error:** ${msg}\n\nPlease try again or rephrase your question.`,
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'ai',
+          text: `❌ **Error:** ${msg}\n\nPlease try again or rephrase your question.`,
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -168,10 +219,13 @@ export default function Chat() {
               <Lightbulb size={13} /> Suggested Questions
             </p>
             <div className="flex flex-wrap gap-2">
-              {suggestions.map(s => (
-                <button key={s} onClick={() => !loading && sendMessage(s)}
+              {suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => !loading && sendMessage(s)}
                   disabled={loading}
-                  className="chip disabled:opacity-50 disabled:cursor-not-allowed">
+                  className="chip disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   {s}
                 </button>
               ))}
@@ -181,11 +235,26 @@ export default function Chat() {
           {/* Messages */}
           <div className="flex flex-col gap-4 min-h-[400px]">
             {messages.map((msg, i) => (
-              <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'user' ? 'bg-[#1A3A6B]' : 'bg-[#fc8b19]'}`}>
-                  {msg.role === 'user'
-                    ? (user?.photoURL ? <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" /> : <User size={14} className="text-white" />)
-                    : <Bot size={14} className="text-white" />}
+              <div
+                key={i}
+                className={`flex gap-3 ${
+                  msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                }`}
+              >
+                <div
+                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                    msg.role === 'user' ? 'bg-[#1A3A6B]' : 'bg-[#fc8b19]'
+                  }`}
+                >
+                  {msg.role === 'user' ? (
+                    user?.photoURL ? (
+                      <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" />
+                    ) : (
+                      <User size={14} className="text-white" />
+                    )
+                  ) : (
+                    <Bot size={14} className="text-white" />
+                  )}
                 </div>
                 <div
                   className={msg.role === 'user' ? 'bubble-user' : 'bubble-ai'}
@@ -201,9 +270,18 @@ export default function Chat() {
                   <Bot size={14} className="text-white" />
                 </div>
                 <div className="bubble-ai flex items-center gap-1.5 py-4">
-                  <span className="w-2 h-2 bg-[#43474f] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-[#43474f] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-[#43474f] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span
+                    className="w-2 h-2 bg-[#43474f] rounded-full animate-bounce"
+                    style={{ animationDelay: '0ms' }}
+                  />
+                  <span
+                    className="w-2 h-2 bg-[#43474f] rounded-full animate-bounce"
+                    style={{ animationDelay: '150ms' }}
+                  />
+                  <span
+                    className="w-2 h-2 bg-[#43474f] rounded-full animate-bounce"
+                    style={{ animationDelay: '300ms' }}
+                  />
                 </div>
               </div>
             )}
@@ -222,20 +300,25 @@ export default function Chat() {
           )}
 
           {/* Input */}
-          <form onSubmit={handleSubmit}
-            className="sticky bottom-6 bg-white border border-[#e9edff] rounded-2xl shadow-lg p-3 flex gap-3">
+          <form
+            onSubmit={handleSubmit}
+            className="sticky bottom-6 bg-white border border-[#e9edff] rounded-2xl shadow-lg p-3 flex gap-3"
+          >
             <input
               type="text"
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about voter registration, EVM, election phases..."
               aria-label="Chat input"
               className="flex-1 bg-transparent text-sm text-[#0d1b35] outline-none placeholder:text-[#43474f]/50 px-2"
               disabled={loading}
             />
-            <button type="submit" disabled={!input.trim() || loading}
+            <button
+              type="submit"
+              disabled={!input.trim() || loading}
               aria-label="Send message"
-              className="w-10 h-10 bg-[#002451] rounded-xl flex items-center justify-center text-white disabled:opacity-40 hover:bg-[#1A3A6B] transition flex-shrink-0">
+              className="w-10 h-10 bg-[#002451] rounded-xl flex items-center justify-center text-white disabled:opacity-40 hover:bg-[#1A3A6B] transition flex-shrink-0"
+            >
               <Send size={16} />
             </button>
           </form>

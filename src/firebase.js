@@ -14,6 +14,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
 
+// Configure Google provider with extra scopes and prompt
+const provider = new GoogleAuthProvider();
+provider.addScope('profile');
+provider.addScope('email');
+// Always show account chooser (avoids silent auth issues on Cloud Run)
+provider.setCustomParameters({ prompt: 'select_account' });
+
+export const googleProvider = provider;
 export default app;
