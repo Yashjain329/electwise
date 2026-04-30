@@ -31,5 +31,13 @@
     "location": "nam5",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "ElectWise",
+        "supportEmail": "yashjain9350@gmail.com"
+      }
+    }
   }
 }

@@ -26,83 +26,34 @@ const MODELS = [
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function callGemini(question, history, apiKey) {
-  const contents = [
-    ...history.filter((_, i) => i > 0).map((m) => ({
-      role: m.role === 'user' ? 'user' : 'model',
-      parts: [{ text: m.text }],
-    })),
-    { role: 'user', parts: [{ text: question }] },
-  ];
+async function callGemini(question, userUid, projectId) {
+  const apiUrl = `https://us-central1-${projectId}.cloudfunctions.net/api/chat`;
 
-  const errors = [];
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, uid: userUid }),
+    });
 
-  for (let attempt = 0; attempt < MODELS.length; attempt++) {
-    const model = MODELS[attempt];
-    try {
-      // Small backoff between attempts
-      if (attempt > 0) await sleep(600 * attempt);
-
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents,
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
-          }),
-        }
-      );
-
-      // Rate-limited or overloaded — try next model
-      if (res.status === 429 || res.status === 503 || res.status === 500) {
-        errors.push(`${model}: HTTP ${res.status}`);
-        continue;
-      }
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        const msg = err?.error?.message || `HTTP ${res.status}`;
-        // Model not found — skip silently
-        if (res.status === 404 || msg.includes('not found')) {
-          errors.push(`${model}: not found`);
-          continue;
-        }
-        throw new Error(msg);
-      }
-
-      const data = await res.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (text) return { text, model };
-
-      // Empty response — try next
-      errors.push(`${model}: empty response`);
-    } catch (e) {
-      // Network error — stop immediately
-      if (
-        e.name === 'TypeError' &&
-        (e.message.includes('fetch') || e.message.includes('network'))
-      ) {
-        throw new Error(
-          'Network error. Please check your internet connection and try again.'
-        );
-      }
-      errors.push(`${model}: ${e.message}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
     }
-  }
 
-  console.error('All Gemini models failed:', errors);
-  throw new Error(
-    'The AI service is temporarily unavailable. Please try again in a moment.'
-  );
+    const data = await res.json();
+    return { text: data.answer, model: data.model };
+  } catch (e) {
+    if (e.name === 'TypeError' && (e.message.includes('fetch') || e.message.includes('network'))) {
+      throw new Error('Network error. Please check your internet connection or verify the backend is deployed.');
+    }
+    throw e;
+  }
 }
 
 export default function Chat() {
   const { user } = useAuth();
   const { addToast } = useToast();
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const [messages, setMessages] = useState([
     {
       role: 'ai',
@@ -128,22 +79,16 @@ export default function Chat() {
     setInput('');
     setError(null);
 
-    if (!apiKey) {
-      setError(
-        'Gemini API key is not configured. The app may need to be redeployed with updated secrets.'
-      );
-      return;
-    }
-
     const userMsg = { role: 'user', text: question };
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
     try {
+      const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
       const { text: answer, model } = await callGemini(
         question,
-        [...messages, userMsg],
-        apiKey
+        user?.uid,
+        projectId
       );
       const aiMsg = { role: 'ai', text: answer };
       setMessages((prev) => [...prev, aiMsg]);
@@ -200,11 +145,6 @@ export default function Chat() {
             <p className="mt-3 text-xs text-yellow-300 bg-white/10 px-4 py-2 rounded-full inline-block">
               <AlertCircle size={12} className="inline mr-1" />
               Sign in to save your conversation history
-            </p>
-          )}
-          {!apiKey && (
-            <p className="mt-3 text-xs text-red-300 bg-red-900/30 px-4 py-2 rounded-full inline-block">
-              ⚠️ Gemini API key not found in environment
             </p>
           )}
         </div>

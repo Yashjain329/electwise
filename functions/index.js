@@ -48,8 +48,8 @@ async function checkRateLimit(uid) {
   return true;
 }
 
-// ── POST /api/chat ────────────────────────────────────────────────────────────
-app.post('/api/chat', async (req, res) => {
+// ── POST /chat ────────────────────────────────────────────────────────────
+app.post('/chat', async (req, res) => {
   try {
     const { question, uid } = req.body;
     if (!question || typeof question !== 'string' || question.trim().length === 0) {
@@ -69,7 +69,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'Gemini API key not configured.' });
     }
 
-    const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
+    const MODELS = ['gemini-2.5-flash', 'gemini-flash-latest'];
     let answer = null;
     let usedModel = null;
 
@@ -123,7 +123,7 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// ── GET /api/questions ────────────────────────────────────────────────────────
+// ── GET /questions ────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
   { q: 'What is the minimum age to vote in Indian elections?', options: ['16', '18', '21', '25'], correct: 1 },
   { q: 'How many phases did the 2024 Lok Sabha election have?', options: ['5', '6', '7', '9'], correct: 2 },
@@ -137,14 +137,14 @@ const QUIZ_QUESTIONS = [
   { q: 'What system does India use for voting?', options: ['Proportional Representation', 'Single Transferable Vote', 'First Past the Post', 'Approval Voting'], correct: 2 },
 ];
 
-app.get('/api/questions', (req, res) => {
+app.get('/questions', (req, res) => {
   // Return questions without correct answers for client; send separately on submit
   const safeQuestions = QUIZ_QUESTIONS.map(({ q, options }) => ({ q, options }));
   res.json({ questions: safeQuestions });
 });
 
-// ── POST /api/scores ──────────────────────────────────────────────────────────
-app.post('/api/scores', async (req, res) => {
+// ── POST /scores ──────────────────────────────────────────────────────────
+app.post('/scores', async (req, res) => {
   try {
     const { uid, answers } = req.body;
     if (!uid || !Array.isArray(answers) || answers.length !== QUIZ_QUESTIONS.length) {
