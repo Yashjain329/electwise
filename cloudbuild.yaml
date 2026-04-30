@@ -1,33 +1,43 @@
 steps:
-  # Step 1: Build Docker image — secrets injected from Secret Manager (never stored in repo)
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
+  # Step 1: Fetch secrets and write to .env file for Docker build
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
     args:
       - '-c'
       - |
-        docker build -t gcr.io/$PROJECT_ID/electwise-frontend \
-          --build-arg VITE_FIREBASE_API_KEY=$$VITE_FIREBASE_API_KEY \
-          --build-arg VITE_FIREBASE_AUTH_DOMAIN=$$VITE_FIREBASE_AUTH_DOMAIN \
-          --build-arg VITE_FIREBASE_PROJECT_ID=$$VITE_FIREBASE_PROJECT_ID \
-          --build-arg VITE_FIREBASE_STORAGE_BUCKET=$$VITE_FIREBASE_STORAGE_BUCKET \
-          --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID=$$VITE_FIREBASE_MESSAGING_SENDER_ID \
-          --build-arg VITE_FIREBASE_APP_ID=$$VITE_FIREBASE_APP_ID \
-          --build-arg VITE_GEMINI_API_KEY=$$VITE_GEMINI_API_KEY \
-          .
-    secretEnv:
-      - 'VITE_FIREBASE_API_KEY'
-      - 'VITE_FIREBASE_AUTH_DOMAIN'
-      - 'VITE_FIREBASE_PROJECT_ID'
-      - 'VITE_FIREBASE_STORAGE_BUCKET'
-      - 'VITE_FIREBASE_MESSAGING_SENDER_ID'
-      - 'VITE_FIREBASE_APP_ID'
-      - 'VITE_GEMINI_API_KEY'
+        echo "VITE_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_API_KEY --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "VITE_FIREBASE_AUTH_DOMAIN=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_AUTH_DOMAIN --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "VITE_FIREBASE_PROJECT_ID=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_PROJECT_ID --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "VITE_FIREBASE_STORAGE_BUCKET=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_STORAGE_BUCKET --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "VITE_FIREBASE_MESSAGING_SENDER_ID=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_MESSAGING_SENDER_ID --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "VITE_FIREBASE_APP_ID=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_APP_ID --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "VITE_GEMINI_API_KEY=$(gcloud secrets versions access latest --secret=VITE_GEMINI_API_KEY --project=$PROJECT_ID)" >> /workspace/.env.build
+        echo "Secrets fetched successfully"
+        cat /workspace/.env.build | sed 's/=.*/=***REDACTED***/'
 
-  # Step 2: Push the image
+  # Step 2: Build Docker image using the .env.build file
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        # Export vars from .env.build as Docker build args
+        export $(cat /workspace/.env.build | xargs)
+        docker build -t gcr.io/$PROJECT_ID/electwise-frontend \
+          --build-arg VITE_FIREBASE_API_KEY="$VITE_FIREBASE_API_KEY" \
+          --build-arg VITE_FIREBASE_AUTH_DOMAIN="$VITE_FIREBASE_AUTH_DOMAIN" \
+          --build-arg VITE_FIREBASE_PROJECT_ID="$VITE_FIREBASE_PROJECT_ID" \
+          --build-arg VITE_FIREBASE_STORAGE_BUCKET="$VITE_FIREBASE_STORAGE_BUCKET" \
+          --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID="$VITE_FIREBASE_MESSAGING_SENDER_ID" \
+          --build-arg VITE_FIREBASE_APP_ID="$VITE_FIREBASE_APP_ID" \
+          --build-arg VITE_GEMINI_API_KEY="$VITE_GEMINI_API_KEY" \
+          .
+
+  # Step 3: Push the image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/electwise-frontend']
 
-  # Step 3: Deploy to Cloud Run
+  # Step 4: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -46,23 +56,6 @@ steps:
 
 images:
   - 'gcr.io/$PROJECT_ID/electwise-frontend'
-
-availableSecrets:
-  secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/VITE_FIREBASE_API_KEY/versions/latest
-      env: 'VITE_FIREBASE_API_KEY'
-    - versionName: projects/$PROJECT_ID/secrets/VITE_FIREBASE_AUTH_DOMAIN/versions/latest
-      env: 'VITE_FIREBASE_AUTH_DOMAIN'
-    - versionName: projects/$PROJECT_ID/secrets/VITE_FIREBASE_PROJECT_ID/versions/latest
-      env: 'VITE_FIREBASE_PROJECT_ID'
-    - versionName: projects/$PROJECT_ID/secrets/VITE_FIREBASE_STORAGE_BUCKET/versions/latest
-      env: 'VITE_FIREBASE_STORAGE_BUCKET'
-    - versionName: projects/$PROJECT_ID/secrets/VITE_FIREBASE_MESSAGING_SENDER_ID/versions/latest
-      env: 'VITE_FIREBASE_MESSAGING_SENDER_ID'
-    - versionName: projects/$PROJECT_ID/secrets/VITE_FIREBASE_APP_ID/versions/latest
-      env: 'VITE_FIREBASE_APP_ID'
-    - versionName: projects/$PROJECT_ID/secrets/VITE_GEMINI_API_KEY/versions/latest
-      env: 'VITE_GEMINI_API_KEY'
 
 options:
   logging: CLOUD_LOGGING_ONLY
