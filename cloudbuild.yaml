@@ -1,37 +1,34 @@
 steps:
-  # Step 1: Fetch secrets and write to .env file for Docker build
+  # Step 1: Fetch all secrets from Secret Manager and write to workspace file
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: bash
     args:
       - '-c'
-      - |
-        echo "VITE_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_API_KEY --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "VITE_FIREBASE_AUTH_DOMAIN=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_AUTH_DOMAIN --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "VITE_FIREBASE_PROJECT_ID=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_PROJECT_ID --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "VITE_FIREBASE_STORAGE_BUCKET=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_STORAGE_BUCKET --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "VITE_FIREBASE_MESSAGING_SENDER_ID=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_MESSAGING_SENDER_ID --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "VITE_FIREBASE_APP_ID=$(gcloud secrets versions access latest --secret=VITE_FIREBASE_APP_ID --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "VITE_GEMINI_API_KEY=$(gcloud secrets versions access latest --secret=VITE_GEMINI_API_KEY --project=$PROJECT_ID)" >> /workspace/.env.build
-        echo "Secrets fetched successfully"
-        cat /workspace/.env.build | sed 's/=.*/=***REDACTED***/'
+      - >-
+        gcloud secrets versions access latest --secret=VITE_FIREBASE_API_KEY --project=${PROJECT_ID} > /workspace/s_api_key &&
+        gcloud secrets versions access latest --secret=VITE_FIREBASE_AUTH_DOMAIN --project=${PROJECT_ID} > /workspace/s_auth_domain &&
+        gcloud secrets versions access latest --secret=VITE_FIREBASE_PROJECT_ID --project=${PROJECT_ID} > /workspace/s_project_id &&
+        gcloud secrets versions access latest --secret=VITE_FIREBASE_STORAGE_BUCKET --project=${PROJECT_ID} > /workspace/s_storage_bucket &&
+        gcloud secrets versions access latest --secret=VITE_FIREBASE_MESSAGING_SENDER_ID --project=${PROJECT_ID} > /workspace/s_sender_id &&
+        gcloud secrets versions access latest --secret=VITE_FIREBASE_APP_ID --project=${PROJECT_ID} > /workspace/s_app_id &&
+        gcloud secrets versions access latest --secret=VITE_GEMINI_API_KEY --project=${PROJECT_ID} > /workspace/s_gemini_key &&
+        echo "All secrets fetched OK"
 
-  # Step 2: Build Docker image using the .env.build file
+  # Step 2: Build Docker image passing secrets as build args
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: bash
     args:
       - '-c'
-      - |
-        # Export vars from .env.build as Docker build args
-        export $(cat /workspace/.env.build | xargs)
-        docker build -t gcr.io/$PROJECT_ID/electwise-frontend \
-          --build-arg VITE_FIREBASE_API_KEY="$VITE_FIREBASE_API_KEY" \
-          --build-arg VITE_FIREBASE_AUTH_DOMAIN="$VITE_FIREBASE_AUTH_DOMAIN" \
-          --build-arg VITE_FIREBASE_PROJECT_ID="$VITE_FIREBASE_PROJECT_ID" \
-          --build-arg VITE_FIREBASE_STORAGE_BUCKET="$VITE_FIREBASE_STORAGE_BUCKET" \
-          --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID="$VITE_FIREBASE_MESSAGING_SENDER_ID" \
-          --build-arg VITE_FIREBASE_APP_ID="$VITE_FIREBASE_APP_ID" \
-          --build-arg VITE_GEMINI_API_KEY="$VITE_GEMINI_API_KEY" \
-          .
+      - >-
+        docker build -t gcr.io/${PROJECT_ID}/electwise-frontend
+        --build-arg VITE_FIREBASE_API_KEY="$(cat /workspace/s_api_key)"
+        --build-arg VITE_FIREBASE_AUTH_DOMAIN="$(cat /workspace/s_auth_domain)"
+        --build-arg VITE_FIREBASE_PROJECT_ID="$(cat /workspace/s_project_id)"
+        --build-arg VITE_FIREBASE_STORAGE_BUCKET="$(cat /workspace/s_storage_bucket)"
+        --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID="$(cat /workspace/s_sender_id)"
+        --build-arg VITE_FIREBASE_APP_ID="$(cat /workspace/s_app_id)"
+        --build-arg VITE_GEMINI_API_KEY="$(cat /workspace/s_gemini_key)"
+        .
 
   # Step 3: Push the image
   - name: 'gcr.io/cloud-builders/docker'
