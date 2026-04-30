@@ -1,1 +1,186 @@
-IyDwn5a38J+P3yBFbGVjdFdpc2Ug4oCUIEFJLVBvd2VyZWQgQ2l2aWMgRWR1Y2F0aW9uIFBsYXRmb3JtCgpbIVtIYWNrMlNraWxsIFByb21wdFdhcnMgMjAyNl0oaHR0cHM6Ly9pbWcuc2hpZWxkcy5pby9iYWRnZS9IYWNrMlNraWxsLVByb21wdFdhcnMlMjAyMDI2LUZGN0IwMD9zdHlsZT1mb3ItdGhlLWJhZGdlJmxvZ289ZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhZQlBTSXdMakF4TmlJZ2FHVUJQUzBuTXlJK1BIQmhkR2dnWm1sc2JEMGlkMmhwZEdVaUlIWUJQU0l3SURJd0wyMXZaR1VpSUhBQlBTSW9NaklMT1RZNU1Ea3lMekkzT0M0d0xqQXZNak00TkRjdU1pOGlJRFlpLz48L3N2Zz4pXShodHRwczovL2hhY2syc2tpbGwuY29tKQpbIVtGaXJlYmFzZV0oaHR0cHM6Ly9pbWcuc2hpZWxkcy5pby9iYWRnZS9GaXJlYmFzZS1GaXJlc3RvcmUlMjAlMkIlMjBBdXRoLUZGQ0EyOD9zdHlsZT1mb3ItdGhlLWJhZGdlJmxvZ289ZmlyZWJhc2UpXShodHRwczovL2ZpcmViYXNlLmdvb2dsZS5jb20pCltbIUdvb2dsZSBDbG91ZCBSdW5dKGh0dHBzOi8vaW1nLnNoaWVsZHMuaW8vYmFkZ2UvR29vZ2xlX0Nsb3VkLUNsb3VkX1J1bi00Mjg1RjQ/c3R5bGU9Zm9yLXRoZS1iYWRnZSZsb2dvPWdvb2dsZWNsb3VkKV0oaHR0cHM6Ly9jbG91ZC5nb29nbGUuY29tL3J1bikKW1shW1JlYWN0XShodHRwczovL2ltZy5zaGllbGRzLmlvL2JhZGdlL1JlYWN0LTE5LTYxREFGQj9zdHlsZT1mb3ItdGhlLWJhZGdlJmxvZ289cmVhY3QpXShodHRwczovL3JlYWN0LmRldikKW1shW0dlbWluaSBBSV0oaHR0cHM6Ly9pbWcuc2hpZWxkcy5pby9iYWRnZS9HZW1pbmktMi4wX0ZsYXNoLThFNzVCMj9zdHlsZT1mb3ItdGhlLWJhZGdlJmxvZ289Z29vZ2xlKV0oaHR0cHM6Ly9haS5nb29nbGUuZGV2KQpbIVtMaXZlIERlbW9dKGh0dHBzOi8vaW1nLnNoaWVsZHMuaW8vYmFkZ2Uvd2ViL2h0dHBzL2VsZWN0d2lzZS1mcm9udGVuZC1wbnZ1NjdwcWZxLXVjLmEucnVuLmFwcD9zdHlsZT1mb3ItdGhlLWJhZGdlJmxhYmVsPUxpdmUlMjBEZW1vKV0oaHR0cHM6Ly9lbGVjdHdpc2UtZnJvbnRlbmQtcG52dTY3cHFmcS11Yy5hLnJ1bi5hcHApCgo+ICoqRW1wb3dlcmluZyBldmVyeSBJbmRpYW4gY2l0aXplbiB3aXRoIGRlbW9jcmF0aWMga25vd2xlZGdlIOKAlCBmcm9tIHJlZ2lzdHJhdGlvbiB0byByZXN1bHRzLioqCgpFbGVjdFdpc2UgaXMgYSBmdWxsLXN0YWNrIGNpdmljIGVkdWNhdGlvbiB3ZWIgYXBwIGJ1aWx0IGZvciB0aGUgKipIYWNrMlNraWxsIFZpcnR1YWwgUHJvbXB0V2FycyAyMDI2KiogaGFja2F0aG9uLiBJdCBjb21iaW5lcyBhbiBpbnRlcmFjdGl2ZSBFbGVjdGlvbiBKb3VybmV5IE1hcCwgYW4gQUktcG93ZXJlZCBDaXZpYyBBc3Npc3RhbnQgKEdvb2dsZSBHZW1pbmkpLCBhbiBFbGVjdGlvbiBUaW1lbGluZSwgYSBHbG9zc2FyeSwgYSBRdWl6LCBhbmQgYSBwZXJzb25hbCBEYXNoYm9hcmQg4oCUIGFsbCBiYWNrZWQgYnkgRmlyZWJhc2UuCgotLS0KCiMjIPCfmoAgTGl2ZSBEZW1vCgoqKltodHRwczovL2VsZWN0d2lzZS1mcm9udGVuZC1wbnZ1NjdwcWZxLXVjLmEucnVuLmFwcF0oaHR0cHM6Ly9lbGVjdHdpc2UtZnJvbnRlbmQtcG52dTY3cHFmcS11Yy5hLnJ1bi5hcHApKioKCi0tLQoKIyMg8J+Ygb+vIFRlY2ggU3RhY2sKCnwgTGF5ZXIgfCBUZWNobm9sb2d5IHwKfC0tLXwtLS18CnwgKipGcm9udGVuZCoqIHwgUmVhY3QgMTkgKyBWaXRlICsgUmVhY3QgUm91dGVyIHY2IHwKfCAqKlN0eWxpbmcqKiB8IFRhaWx3aW5kIENTUyB2NCAoY3VzdG9tIGRlc2lnbiB0b2tlbnMpIHwKfCAqKkZvbnRzKiogfCBOZXdzcmVhZGVyIChzZXJpZikgKyBXb3JrIFNhbnMgKHNhbnMpIHZpYSBHb29nbGUgRm9udHMgfAp8ICoqQ2hhcnRzKiogfCBSZWFjdCBHb29nbGUgQ2hhcnRzIChUaW1lbGluZS9HYW50dCkgfAp8ICoqSWNvbnMqKiB8IEx1Y2lkZSBSZWFjdCB8CnwgKipBSSoqIHwgR29vZ2xlIEdlbWluaSAyLjAgRmxhc2ggQVBJIHwKfCAqKkF1dGgqKiB8IEZpcmViYXNlIEF1dGhlbnRpY2F0aW9uIChHb29nbGUgU2lnbi1JbikgfAp8ICoqRGF0YWJhc2UqKiB8IENsb3VkIEZpcmVzdG9yZSB8CnwgKipCYWNrZW5kKiogfCBGaXJlYmFzZSBDbG91ZCBGdW5jdGlvbnMgKE5vZGUuanMgMjApIHwKfCAqKkhvc3RpbmcqKiB8IEdvb2dsZSBDbG91ZCBSdW4gKHVzLWNlbnRyYWwxKSB8CnwgKipDSS9DRCoqIHwgR29vZ2xlIENsb3VkIEJ1aWxkICh0cmlnZ2VyZWQgZnJvbSBHaXRIdWIpIHwKCi0tLQoKIyMg8J+Hl7+vIEFyY2hpdGVjdHVyZQoKYGBgCuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkArilIIgICAgICAgICAgICAgICAgICBDTElFTlQgKEJyb3dzZXIpICAgICAgICAgICAgICAgICDilIIK4pSCICBSZWFjdCAxOSArIFZpdGUgKyBUYWlsd2luZCBDU1MgdjQgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIK4pSCICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgKeKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilJAgKeKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCAgICAgICDilIIK4pSCICDilIIgIEhvbWUgICAgfCDilIIgSm91cm5leSAgfCDilIIgIENoYXQgICAgfCDilIIgVGltZWxpbmUgfCAgICAgICAgIOKUggrilaIgICDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilJggKeKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilJggKeKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCAgICAgICDilIIK4pSCICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgKeKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIK4pSCICDilIIgR2xvc3NhcnkgfCDilIIgRGFzaGJvYXJkIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKUggrilaIgICDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilJggKeKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCAgICAgICAgICAgICAgICAgICAgICAgICAgICDilIIK4pSU4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSYCiAgICAgICAgICAgICAgICDilIIgICAgICAgICAgICAgICAgIOKUggogICAgICAgIEZpcmViYXNlIFNESyAgICAgICAgICBIVFRQUyBjYWxscwogICAgICAgICAgICAgICAg4pSCICAgICAgICAgICAgICAgICDilIIKICAgICAgICAgICAgICAgIOKUjCAgICAgICAgICAgICAgICAg4pSMCuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKWvuKUgOKUgOKUgOKUgOKUgOKUgOKUkCAgCuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCAgCuKUgiAgIEZpcmViYXNlIFNlcnZpY2VzICB8ICB8ICAgRmlyZWJhc2UgQ2xvdWQgRnVuY3Rpb25zIChBUEkpICAgIHwKaXJlc3RvcmUgREIgIHwgICDilIIgIFBPU1QgL2FwaS9jaGF0ICDihpIgR2VtaW5pIEFJICAgICAgICB8CnwgIEF1dGggKEdvb2dsZSkgfCAgfCAgR0VUICAvYXBpL3F1ZXN0aW9ucyAgICAgICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAgfCAgUE9TVCAvYXBpL3Njb3JlcyAgICAgICAgICAgICAgICAgICAgfApgYGAKCi0tLQoKIyMg4pyoIEZlYXR1cmVzCgp8IEZlYXR1cmUgfCBEZXNjcmlwdGlvbiB8CnwtLS18LS0tfAp8IPCfk7rvuI8gKipFbGVjdGlvbiBKb3VybmV5IE1hcCoqIHwgNS1zdGVwIGludGVyYWN0aXZlIGFjY29yZGlvbiB3aXRoIEZpcmVzdG9yZSBwcm9ncmVzcyB0cmFja2luZyAmIGNvbmZldHRpIHwKfCDwn6eS4oC/ICoqQUkgQ2l2aWMgQXNzaXN0YW50KiogfCBHZW1pbmktcG93ZXJlZCBjaGF0IHdpdGggc3VnZ2VzdGVkIHF1ZXN0aW9ucyAmIHR5cGluZyBpbmRpY2F0b3IgfAp8IPCfk4Uvueo3ICoqRWxlY3Rpb24gVGltZWxpbmUqKiB8IEdhbnR0LXN0eWxlIEdvb2dsZSBDaGFydHMgdGltZWxpbmUgZm9yIE5hdGlvbmFsIC8gU3RhdGUgLyBMb2NhbCBlbGVjdGlvbnMgfAp8IPCfk5YgKipHbG9zc2FyeSoqIHwgU2VhcmNoYWJsZSBnbG9zc2FyeSB3aXRoIDIyIGNpdmljIHRlcm1zIHwKfCDwn46vICoqQ2l2aWMgUXVpeioqIHwgMTAtcXVlc3Rpb24gcXVpeiB3aXRoIHNjb3JlIHNhdmVkIHRvIEZpcmVzdG9yZSAmIFdlYiBTaGFyZSBBUEkgfAp8IPCfkooqKlBlcnNvbmFsIERhc2hib2FyZCoqIHwgRGVtb2NyYWN5IFNjb3JlLCBzdHJlYWtzLCBxdWl6IGhpc3RvcnkgYW5kIG1vcmUgfAoKLS0tCgojIyDwn5GRIFByZXJlcXVpc2l0ZXMKCi0gTm9kZS5qcyAyMCsKLSBGaXJlYmFzZSBDTEk6IGBucG0gaW5zdGFsbCAtZyBmaXJlYmFzZS10b29sc2AKLSBHb29nbGUgQ2xvdWQgU0RLIChmb3IgQ2xvdWQgUnVuIGRlcGxveW1lbnQpCi0gQSBGaXJlYmFzZSBwcm9qZWN0IHdpdGggRmlyZXN0b3JlICsgR29vZ2xlIEF1dGggZW5hYmxlZAotIEEgR2VtaW5pIEFQSSBrZXkgZnJvbSBbR29vZ2xlIEFJIFN0dWRpb10oaHR0cHM6Ly9haXN0dWRpby5nb29nbGUuY29tKQoKLS0tCgojIyDilZkgTG9jYWwgU2V0dXAKCmBgYGJhc2gKIyAxLiBDbG9uZSB0aGUgcmVwbwpnaXQgY2xvbmUgaHR0cHM6Ly9naXRodWIuY29tL1lhc2hqYWluMzI5L2VsZWN0d2lzZS5naXQKY2QgZWxlY3R3aXNlCgojIDIuIEluc3RhbGwgZnJvbnRlbmQgZGVwZW5kZW5jaWVzCm5wbSBpbnN0YWxsCgojIDMuIENvcHkgYW5kIGZpbGwgaW4gdGhlIGVudmlyb25tZW50IHZhcmlhYmxlcwpjcCAuZW52LmV4YW1wbGUgLmVudgojIEVkaXQgLmVudiB3aXRoIHlvdXIgRmlyZWJhc2UgY29uZmlnIGFuZCBHZW1pbmkgQVBJIGtleQoKIyA0LiBTdGFydCB0aGUgZGV2IHNlcnZlcgpucG0gcnVuIGRldgojIOKGkiBodHRwOi8vbG9jYWxob3N0OjUxNzMKCiMgNS4gKE9wdGlvbmFsKSBJbnN0YWxsIGFuZCBydW4gQ2xvdWQgRnVuY3Rpb25zIGxvY2FsbHkKY2QgZnVuY3Rpb25zICYmIG5wbSBpbnN0YWxsICYmIGNkIC4uCmZpcmViYXNlIGVtdWxhdG9yczpzdGFydCAtLW9ubHkgZnVuY3Rpb25zLGZpcmVzdG9yZQp
+# ElectWise — Civic Education Platform
+### 🏆 Hack2Skill Virtual PromptWars Hackathon 2024
+
+> **Live Demo:** [https://electwise-frontend-pnvu67pqfq-uc.a.run.app](https://electwise-frontend-pnvu67pqfq-uc.a.run.app)  
+> [![Hack2Skill](https://img.shields.io/badge/Hack2Skill-PromptWars%202024-orange)](https://hack2skill.com)
+
+A full-stack Election Process Education web application empowering every Indian citizen with knowledge about voter rights, election procedures, and democratic participation.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 19 + Vite + Tailwind CSS v4 |
+| Fonts | Newsreader (headings) + Work Sans (body) |
+| Design System | Google Stitch (project: `10852318437017309646`) |
+| Icons | Lucide React |
+| Charts | React Google Charts (Timeline/Gantt) |
+| AI | Google Gemini 2.0 Flash API |
+| Auth | Firebase Authentication (Google Sign-In) |
+| Database | Cloud Firestore |
+| Hosting | Firebase Hosting + Google Cloud Run |
+| Containerization | Docker (nginx:stable-alpine, port 8080) |
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    User Browser                         │
+│          React 19 + Vite + Tailwind CSS v4              │
+│   Home | Journey | Chat | Timeline | Glossary | Dashboard│
+└────────────────────┬────────────────────────────────────┘
+                     │ HTTPS
+          ┌──────────┴──────────┐
+          │                     │
+  ┌───────▼───────┐    ┌────────▼────────┐
+  │  Firebase     │    │  Google Cloud   │
+  │  Hosting      │    │  Run (nginx)    │
+  │  (Frontend)   │    │  Port 8080      │
+  └───────┬───────┘    └────────┬────────┘
+          └──────────┬──────────┘
+                     │
+         ┌───────────▼────────────┐
+         │   Firebase Services    │
+         │  ┌──────────────────┐  │
+         │  │  Auth (Google)   │  │
+         │  ├──────────────────┤  │
+         │  │  Firestore DB    │  │
+         │  └──────────────────┘  │
+         └───────────┬────────────┘
+                     │
+              ┌──────▼──────┐
+              │  Gemini 2.0 │
+              │  Flash API  │
+              └─────────────┘
+```
+
+---
+
+## Pages
+
+| Page | Route | Features |
+|---|---|---|
+| Home | `/` | Hero, 4 feature cards, How It Works, CTA |
+| Election Journey | `/journey` | 5-step accordion, progress tracking, confetti |
+| AI Civic Assistant | `/chat` | Gemini AI chat, typing indicator, Firestore history |
+| Election Timeline | `/timeline` | Google Charts Gantt, 3 filter tabs, key dates |
+| Glossary & Quiz | `/glossary` | 22-term searchable glossary, 10-question quiz, share |
+| Dashboard | `/dashboard` | Democracy Score, streak, parallel Firestore data |
+
+---
+
+## Firestore Schema
+
+| Collection | Document | Fields |
+|---|---|---|
+| `userProgress` | `{uid}` | `completedSteps[]`, `updatedAt` |
+| `chatHistory/{uid}/messages` | `{id}` | `question`, `answer`, `createdAt` |
+| `quizScores` | `{uid}` | `score`, `totalQuestions`, `completedAt` |
+
+---
+
+## Local Setup
+
+### Prerequisites
+- Node.js 20+
+- Firebase CLI: `npm install -g firebase-tools`
+- Google Cloud CLI (for Cloud Run deploy)
+
+### 1. Clone & Install
+```bash
+git clone https://github.com/Yashjain329/electwise.git
+cd electwise
+npm install
+```
+
+### 2. Environment Variables
+Copy `.env.example` to `.env` and fill in your values:
+```bash
+cp .env.example .env
+```
+
+Required variables:
+```
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+VITE_GEMINI_API_KEY=       # Get from https://aistudio.google.com
+```
+
+### 3. Firebase Setup
+```bash
+firebase login
+firebase use electwise-ebb29
+firebase deploy --only firestore
+```
+
+### 4. Run Locally
+```bash
+npm run dev
+# Opens at http://localhost:5173
+```
+
+---
+
+## Firebase Config Guide
+
+1. Go to [Firebase Console](https://console.firebase.google.com)
+2. Select project `electwise-ebb29`
+3. Project Settings → Your Apps → Web App → Get SDK config
+4. Enable **Authentication** → Sign-in method → Google
+5. Enable **Cloud Firestore** → Create database → Production mode
+6. Copy config values to `.env`
+
+---
+
+## Cloud Run Deployment
+
+### Prerequisites: Enable Billing on GCP
+1. Go to: https://console.cloud.google.com/billing/projects
+2. Link billing account to project `electwise-ebb29`
+
+### Build & Deploy
+```bash
+# Enable APIs (requires billing)
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com
+
+# Build Docker image (env vars baked in at build time)
+gcloud builds submit \
+  --tag gcr.io/electwise-ebb29/electwise-frontend \
+  --build-arg VITE_FIREBASE_API_KEY=... \
+  --build-arg VITE_FIREBASE_AUTH_DOMAIN=electwise-ebb29.firebaseapp.com \
+  --build-arg VITE_FIREBASE_PROJECT_ID=electwise-ebb29 \
+  --build-arg VITE_FIREBASE_STORAGE_BUCKET=electwise-ebb29.firebasestorage.app \
+  --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID=302794556819 \
+  --build-arg VITE_FIREBASE_APP_ID=1:302794556819:web:3892536de72c0971539466 \
+  --build-arg VITE_GEMINI_API_KEY=...
+
+# Deploy to Cloud Run
+gcloud run deploy electwise-frontend \
+  --image gcr.io/electwise-ebb29/electwise-frontend \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8080
+```
+
+---
+
+## Key Design Decisions
+
+- **Stitch Design Tokens**: Colors, typography, and spacing faithfully ported from Google Stitch Civic Modernism design system
+- **Offline-friendly**: Journey, Glossary, Timeline pages work fully without Firestore (static data fallback)  
+- **Security**: API keys in environment variables only; Firestore rules enforce user-level isolation
+- **Accessibility**: ARIA labels on all interactive elements; keyboard navigation supported
+
+---
+
+## License
+MIT — Feel free to fork and adapt for your civic education needs.
