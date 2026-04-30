@@ -1,7 +1,7 @@
 # ElectWise — Civic Education Platform
 ### 🏆 Hack2Skill Virtual PromptWars Hackathon 2024
 
-> **Live Demo:** [Coming Soon — Add link after Cloud Run deploy]  
+> **Live Demo:** [https://electwise-frontend-pnvu67pqfq-uc.a.run.app](https://electwise-frontend-pnvu67pqfq-uc.a.run.app)  
 > [![Hack2Skill](https://img.shields.io/badge/Hack2Skill-PromptWars%202024-orange)](https://hack2skill.com)
 
 A full-stack Election Process Education web application empowering every Indian citizen with knowledge about voter rights, election procedures, and democratic participation.
@@ -92,7 +92,7 @@ A full-stack Election Process Education web application empowering every Indian 
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/electwise.git
+git clone https://github.com/Yashjain329/electwise.git
 cd electwise
 npm install
 ```
