@@ -1,186 +1,272 @@
-# ElectWise — Civic Education Platform
-### 🏆 Hack2Skill Virtual PromptWars Hackathon 2024
+# 🗳️ ElectWise — AI-Powered Civic Education Platform
 
-> **Live Demo:** [https://electwise-frontend-pnvu67pqfq-uc.a.run.app](https://electwise-frontend-pnvu67pqfq-uc.a.run.app)  
-> [![Hack2Skill](https://img.shields.io/badge/Hack2Skill-PromptWars%202024-orange)](https://hack2skill.com)
+[![Hack2Skill PromptWars 2026](https://img.shields.io/badge/Hack2Skill-PromptWars%202026-FF6B00?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTV6TTIgMTdsOCA0IDgtNE0yIDEybDggNCA4LTQiLz48L3N2Zz4=)](https://hack2skill.com)
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%2B%20Auth-FFCA28?style=for-the-badge&logo=firebase)](https://firebase.google.com)
+[![Google Cloud Run](https://img.shields.io/badge/Google_Cloud-Cloud_Run-4285F4?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/run)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![Gemini AI](https://img.shields.io/badge/Gemini-2.0_Flash-8E75B2?style=for-the-badge&logo=google)](https://ai.google.dev)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Click_Here-1A3A6B?style=for-the-badge)](https://electwise-frontend-REPLACE.run.app)
 
-A full-stack Election Process Education web application empowering every Indian citizen with knowledge about voter rights, election procedures, and democratic participation.
+> **Empowering every Indian citizen with democratic knowledge — from registration to results.**
+
+ElectWise is a full-stack civic education web app built for the **Hack2Skill Virtual PromptWars 2026** hackathon. It combines an interactive Election Journey Map, an AI-powered Civic Assistant (Google Gemini), an Election Timeline, a Glossary, a Quiz, and a personal Dashboard — all backed by Firebase.
 
 ---
 
-## Tech Stack
+## 🚀 Live Demo
+
+> **[https://electwise-frontend-REPLACE.run.app](https://electwise-frontend-REPLACE.run.app)**  
+> _(Replace URL after Cloud Run deployment completes)_
+
+---
+
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Frontend | React 19 + Vite + Tailwind CSS v4 |
-| Fonts | Newsreader (headings) + Work Sans (body) |
-| Design System | Google Stitch (project: `10852318437017309646`) |
-| Icons | Lucide React |
-| Charts | React Google Charts (Timeline/Gantt) |
-| AI | Google Gemini 2.0 Flash API |
-| Auth | Firebase Authentication (Google Sign-In) |
-| Database | Cloud Firestore |
-| Hosting | Firebase Hosting + Google Cloud Run |
-| Containerization | Docker (nginx:stable-alpine, port 8080) |
+| **Frontend** | React 19 + Vite + React Router v6 |
+| **Styling** | Tailwind CSS v4 (custom design tokens) |
+| **Fonts** | Newsreader (serif) + Work Sans (sans) via Google Fonts |
+| **Charts** | React Google Charts (Timeline/Gantt) |
+| **Icons** | Lucide React |
+| **AI** | Google Gemini 2.0 Flash API |
+| **Auth** | Firebase Authentication (Google Sign-In) |
+| **Database** | Cloud Firestore |
+| **Backend** | Firebase Cloud Functions (Node.js 20) |
+| **Hosting** | Firebase Hosting + Google Cloud Run |
+| **CI/CD** | Google Cloud Build (triggered from GitHub) |
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    User Browser                         │
-│          React 19 + Vite + Tailwind CSS v4              │
-│   Home | Journey | Chat | Timeline | Glossary | Dashboard│
-└────────────────────┬────────────────────────────────────┘
-                     │ HTTPS
-          ┌──────────┴──────────┐
-          │                     │
-  ┌───────▼───────┐    ┌────────▼────────┐
-  │  Firebase     │    │  Google Cloud   │
-  │  Hosting      │    │  Run (nginx)    │
-  │  (Frontend)   │    │  Port 8080      │
-  └───────┬───────┘    └────────┬────────┘
-          └──────────┬──────────┘
-                     │
-         ┌───────────▼────────────┐
-         │   Firebase Services    │
-         │  ┌──────────────────┐  │
-         │  │  Auth (Google)   │  │
-         │  ├──────────────────┤  │
-         │  │  Firestore DB    │  │
-         │  └──────────────────┘  │
-         └───────────┬────────────┘
-                     │
-              ┌──────▼──────┐
-              │  Gemini 2.0 │
-              │  Flash API  │
-              └─────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         CLIENT (Browser)                        │
+│  React 19 + Vite + Tailwind CSS v4                             │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐         │
+│  │  Home    │ │ Journey  │ │  Chat    │ │ Timeline │         │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘         │
+│  ┌──────────┐ ┌──────────┐                                     │
+│  │ Glossary │ │Dashboard │                                     │
+│  └──────────┘ └──────────┘                                     │
+└───────────────┬─────────────────┬───────────────────────────────┘
+                │                 │
+        Firebase SDK          HTTPS calls
+                │                 │
+┌───────────────▼──────┐  ┌──────▼──────────────────────────────┐
+│   Firebase Services  │  │   Firebase Cloud Functions (API)    │
+│  ┌────────────────┐  │  │  POST /api/chat  → Gemini AI        │
+│  │  Firestore DB  │  │  │  GET  /api/questions                │
+│  ├────────────────┤  │  │  POST /api/scores                   │
+│  │  Auth (Google) │  │  └─────────────────────────────────────┘
+│  └────────────────┘  │
+└──────────────────────┘
+
+                CI/CD Pipeline
+┌──────────────────────────────────────────────────────────────┐
+│  GitHub (main branch push)                                   │
+│       → Cloud Build (cloudbuild.yaml)                        │
+│       → Docker multi-stage build (node:20-slim + nginx)      │
+│       → Push to Container Registry (gcr.io)                  │
+│       → Deploy to Cloud Run (us-central1, port 8080)         │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Pages
+## ✨ Features
 
-| Page | Route | Features |
-|---|---|---|
-| Home | `/` | Hero, 4 feature cards, How It Works, CTA |
-| Election Journey | `/journey` | 5-step accordion, progress tracking, confetti |
-| AI Civic Assistant | `/chat` | Gemini AI chat, typing indicator, Firestore history |
-| Election Timeline | `/timeline` | Google Charts Gantt, 3 filter tabs, key dates |
-| Glossary & Quiz | `/glossary` | 22-term searchable glossary, 10-question quiz, share |
-| Dashboard | `/dashboard` | Democracy Score, streak, parallel Firestore data |
-
----
-
-## Firestore Schema
-
-| Collection | Document | Fields |
-|---|---|---|
-| `userProgress` | `{uid}` | `completedSteps[]`, `updatedAt` |
-| `chatHistory/{uid}/messages` | `{id}` | `question`, `answer`, `createdAt` |
-| `quizScores` | `{uid}` | `score`, `totalQuestions`, `completedAt` |
+| Feature | Description |
+|---|---|
+| 🗺️ **Election Journey Map** | 5-step interactive accordion with Firestore progress tracking & confetti |
+| 🤖 **AI Civic Assistant** | Gemini-powered chat with suggested questions & typing indicator |
+| 📅 **Election Timeline** | Gantt-style Google Charts timeline for National / State / Local elections |
+| 📖 **Glossary** | Searchable glossary with 22 civic terms |
+| 🎯 **Civic Quiz** | 10-question quiz with score saved to Firestore & Web Share API |
+| 📊 **Personal Dashboard** | Democracy Score, streaks, quiz history — protected by Firebase Auth |
 
 ---
 
-## Local Setup
+## 📋 Prerequisites
 
-### Prerequisites
 - Node.js 20+
 - Firebase CLI: `npm install -g firebase-tools`
-- Google Cloud CLI (for Cloud Run deploy)
+- Google Cloud SDK (for Cloud Run deployment)
+- A Firebase project with Firestore + Google Auth enabled
+- A Gemini API key from [Google AI Studio](https://aistudio.google.com)
 
-### 1. Clone & Install
+---
+
+## ⚙️ Local Setup
+
 ```bash
+# 1. Clone the repo
 git clone https://github.com/Yashjain329/electwise.git
 cd electwise
+
+# 2. Install frontend dependencies
 npm install
-```
 
-### 2. Environment Variables
-Copy `.env.example` to `.env` and fill in your values:
-```bash
+# 3. Copy and fill in the environment variables
 cp .env.example .env
+# Edit .env with your Firebase config and Gemini API key
+
+# 4. Start the dev server
+npm run dev
+# → http://localhost:5173
+
+# 5. (Optional) Install and run Cloud Functions locally
+cd functions && npm install && cd ..
+firebase emulators:start --only functions,firestore
 ```
 
-Required variables:
-```
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
-VITE_GEMINI_API_KEY=       # Get from https://aistudio.google.com
-```
+---
 
-### 3. Firebase Setup
+## 🔥 Firebase Configuration
+
+### 1. Create Firebase Project
 ```bash
 firebase login
-firebase use electwise-ebb29
-firebase deploy --only firestore
+firebase projects:create electwise-ebb29
 ```
 
-### 4. Run Locally
+### 2. Enable Services in Firebase Console
+- **Authentication** → Sign-in Methods → Enable Google
+- **Firestore** → Create database (nam5 region, production mode)
+
+### 3. Set Environment Variables
+
+Create `.env` from `.env.example` and fill in all values:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
+VITE_FIREBASE_APP_ID=1:123456789:web:abcdef
+VITE_GEMINI_API_KEY=your_gemini_api_key
+```
+
+### 4. Deploy Firestore Rules & Cloud Functions
 ```bash
-npm run dev
-# Opens at http://localhost:5173
+firebase deploy --only firestore:rules
+cd functions && npm install && cd ..
+firebase deploy --only functions
 ```
 
 ---
 
-## Firebase Config Guide
+## 🐳 Google Cloud Run Deployment
 
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Select project `electwise-ebb29`
-3. Project Settings → Your Apps → Web App → Get SDK config
-4. Enable **Authentication** → Sign-in method → Google
-5. Enable **Cloud Firestore** → Create database → Production mode
-6. Copy config values to `.env`
-
----
-
-## Cloud Run Deployment
-
-### Prerequisites: Enable Billing on GCP
-1. Go to: https://console.cloud.google.com/billing/projects
-2. Link billing account to project `electwise-ebb29`
-
-### Build & Deploy
+### Step 1: Create Secrets in Secret Manager
 ```bash
-# Enable APIs (requires billing)
-gcloud services enable run.googleapis.com cloudbuild.googleapis.com
+gcloud secrets create VITE_FIREBASE_API_KEY --data-file=<(echo -n "YOUR_VALUE")
+gcloud secrets create VITE_FIREBASE_AUTH_DOMAIN --data-file=<(echo -n "YOUR_VALUE")
+gcloud secrets create VITE_FIREBASE_PROJECT_ID --data-file=<(echo -n "YOUR_VALUE")
+gcloud secrets create VITE_FIREBASE_STORAGE_BUCKET --data-file=<(echo -n "YOUR_VALUE")
+gcloud secrets create VITE_FIREBASE_MESSAGING_SENDER_ID --data-file=<(echo -n "YOUR_VALUE")
+gcloud secrets create VITE_FIREBASE_APP_ID --data-file=<(echo -n "YOUR_VALUE")
+gcloud secrets create VITE_GEMINI_API_KEY --data-file=<(echo -n "YOUR_VALUE")
+```
 
-# Build Docker image (env vars baked in at build time)
-gcloud builds submit \
-  --tag gcr.io/electwise-ebb29/electwise-frontend \
-  --build-arg VITE_FIREBASE_API_KEY=... \
-  --build-arg VITE_FIREBASE_AUTH_DOMAIN=electwise-ebb29.firebaseapp.com \
-  --build-arg VITE_FIREBASE_PROJECT_ID=electwise-ebb29 \
-  --build-arg VITE_FIREBASE_STORAGE_BUCKET=electwise-ebb29.firebasestorage.app \
-  --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID=302794556819 \
-  --build-arg VITE_FIREBASE_APP_ID=1:302794556819:web:3892536de72c0971539466 \
-  --build-arg VITE_GEMINI_API_KEY=...
+### Step 2: Grant Cloud Build Permissions
+```bash
+# Get your Cloud Build service account
+PROJECT_NUMBER=$(gcloud projects describe YOUR_PROJECT_ID --format='value(projectNumber)')
+CB_SA="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
 
-# Deploy to Cloud Run
-gcloud run deploy electwise-frontend \
-  --image gcr.io/electwise-ebb29/electwise-frontend \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --port 8080
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID --member="serviceAccount:${CB_SA}" --role="roles/run.admin"
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID --member="serviceAccount:${CB_SA}" --role="roles/storage.admin"
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID --member="serviceAccount:${CB_SA}" --role="roles/iam.serviceAccountUser"
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID --member="serviceAccount:${CB_SA}" --role="roles/secretmanager.secretAccessor"
+```
+
+### Step 3: Connect GitHub Repo to Cloud Build
+1. Go to [Cloud Build Triggers](https://console.cloud.google.com/cloud-build/triggers)
+2. Click **Connect Repository** → GitHub → `Yashjain329/electwise`
+3. Create a trigger: **Push to main branch** → use `cloudbuild.yaml`
+
+### Step 4: Manual Deploy (or push to main)
+```bash
+gcloud builds submit --config cloudbuild.yaml --project electwise-ebb29
+```
+
+### Step 5: Allow Unauthenticated Access
+```bash
+gcloud run services add-iam-policy-binding electwise-frontend \
+  --region=us-central1 \
+  --member="allUsers" \
+  --role="roles/run.invoker"
 ```
 
 ---
 
-## Key Design Decisions
+## 📁 Project Structure
 
-- **Stitch Design Tokens**: Colors, typography, and spacing faithfully ported from Google Stitch Civic Modernism design system
-- **Offline-friendly**: Journey, Glossary, Timeline pages work fully without Firestore (static data fallback)  
-- **Security**: API keys in environment variables only; Firestore rules enforce user-level isolation
-- **Accessibility**: ARIA labels on all interactive elements; keyboard navigation supported
+```
+electwise/
+├── src/
+│   ├── pages/
+│   │   ├── Home.jsx          # Landing page with hero + feature cards
+│   │   ├── Journey.jsx       # 5-step interactive stepper
+│   │   ├── Chat.jsx          # AI Civic Assistant (Gemini)
+│   │   ├── Timeline.jsx      # Gantt election timeline
+│   │   ├── GlossaryQuiz.jsx  # Glossary + 10-question quiz
+│   │   └── Dashboard.jsx     # Protected user dashboard
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Toast.jsx
+│   │   └── ProtectedRoute.jsx
+│   ├── hooks/
+│   │   ├── useAuth.jsx       # Google Sign-In hook
+│   │   └── useFirestore.js   # Firestore CRUD hook
+│   ├── firebase.js           # Firebase initialization
+│   ├── App.jsx               # Router setup
+│   └── index.css             # Tailwind + design tokens
+├── functions/
+│   ├── index.js              # Cloud Functions (chat, questions, scores)
+│   └── package.json
+├── Dockerfile                # Multi-stage build (node:20 → nginx)
+├── nginx.conf                # SPA routing, gzip, port 8080
+├── cloudbuild.yaml           # Cloud Build CI/CD pipeline
+├── firebase.json             # Firebase Hosting + Functions config
+├── firestore.rules           # Security rules (auth-scoped)
+├── .env.example              # Environment variable template
+└── README.md
+```
 
 ---
 
-## License
-MIT — Feel free to fork and adapt for your civic education needs.
+## 🔐 Security
+
+- **Firestore rules**: Users can only read/write their own documents (`auth.uid == userId`)
+- **API keys**: Never exposed in frontend code — stored in Cloud Run env vars and Secret Manager
+- **Rate limiting**: 20 AI chat requests per user per hour (enforced in Cloud Functions)
+- **CORS**: Cloud Functions only accept requests from allowed origins
+
+---
+
+## 📊 Lighthouse Targets
+
+| Metric | Target |
+|---|---|
+| Performance | ≥ 90 |
+| Accessibility | ≥ 95 |
+| Best Practices | ≥ 90 |
+| SEO | ≥ 90 |
+
+---
+
+## 🤝 Contributing
+
+This project was built for the **Hack2Skill Virtual PromptWars 2026** hackathon.  
+Feel free to fork, star ⭐, and contribute!
+
+---
+
+## 📄 License
+
+MIT © 2026 [Yash Jain](https://github.com/Yashjain329)

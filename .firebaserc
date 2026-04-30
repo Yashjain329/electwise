@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "electwise-ebb29"
+  },
   "targets": {},
   "etags": {}
 }
