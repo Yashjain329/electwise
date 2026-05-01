@@ -42,9 +42,9 @@ const tabs = [
 ];
 
 const upcomingDates = [
-  { icon: Calendar, title: 'Voter Registration Deadline', date: 'February 28, 2025', desc: 'Last date to register/update voter ID for next Lok Sabha by-elections.', color: '#1A3A6B' },
-  { icon: Clock, title: 'SVEEP Campaign Period', date: 'March 15 – April 30, 2025', desc: 'Systematic Voters Education and Electoral Participation awareness drive.', color: '#924c00' },
-  { icon: Flag, title: 'By-Elections (Estimated)', date: 'May 2025', desc: 'Estimated dates for upcoming Assembly by-elections in select constituencies.', color: '#1a5c35' },
+  { icon: Calendar, title: 'Voter Registration Deadline', date: 'February 28, 2026', desc: 'Last date to register/update voter ID for next Lok Sabha elections.', color: '#1A3A6B' },
+  { icon: Clock, title: 'SVEEP Campaign Period', date: 'March 15 – April 30, 2026', desc: 'Systematic Voters Education and Electoral Participation awareness drive.', color: '#924c00' },
+  { icon: Flag, title: 'Results Declaration (Estimated)', date: 'June 2026', desc: 'Estimated dates for final counting and result declaration for the general assembly.', color: '#1a5c35' },
 ];
 
 const chartOptions = {

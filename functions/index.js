@@ -22,6 +22,11 @@ app.use(express.json());
 const SYSTEM_PROMPT = `You are ElectWise, a civic education assistant. Answer only questions related to election processes, voter rights, and democratic procedures in India. Be clear, factual, and concise. If asked anything unrelated, politely redirect to election topics.`;
 
 // ── RATE LIMIT HELPER ────────────────────────────────────────────────────────
+/**
+ * Rate limit helper to prevent abuse.
+ * @param {string} uid User ID
+ * @returns {Promise<boolean>} True if allowed
+ */
 async function checkRateLimit(uid) {
   const now = Date.now();
   const windowMs = 60 * 60 * 1000; // 1 hour
@@ -37,7 +42,6 @@ async function checkRateLimit(uid) {
 
   const data = snap.data();
   if (now - data.windowStart > windowMs) {
-    // Reset window
     await ref.set({ count: 1, windowStart: now });
     return true;
   }
@@ -48,15 +52,20 @@ async function checkRateLimit(uid) {
   return true;
 }
 
-// ── POST /chat ────────────────────────────────────────────────────────────
+/**
+ * POST /chat
+ * Proxy for Gemini API with rate limiting and history saving.
+ */
 app.post('/chat', async (req, res) => {
   try {
     const { question, uid } = req.body;
     if (!question || typeof question !== 'string' || question.trim().length === 0) {
       return res.status(400).json({ error: 'question is required' });
     }
+    if (question.length > 2000) {
+      return res.status(400).json({ error: 'question is too long' });
+    }
 
-    // Rate limit (only for authenticated users)
     if (uid) {
       const allowed = await checkRateLimit(uid);
       if (!allowed) {
@@ -69,7 +78,7 @@ app.post('/chat', async (req, res) => {
       return res.status(500).json({ error: 'Gemini API key not configured.' });
     }
 
-    const MODELS = ['gemini-2.5-flash', 'gemini-flash-latest'];
+    const MODELS = ['gemini-2.0-flash', 'gemini-flash-latest'];
     let answer = null;
     let usedModel = null;
 
@@ -106,24 +115,27 @@ app.post('/chat', async (req, res) => {
       return res.status(503).json({ error: 'All Gemini models are busy. Please try again.' });
     }
 
-    // Optionally save to Firestore
     if (uid) {
       await db
         .collection('chatHistory')
         .doc(uid)
         .collection('messages')
-        .add({ question: question.trim(), answer, model: usedModel, createdAt: admin.firestore.FieldValue.serverTimestamp() })
-        .catch(() => {});
+        .add({ 
+          question: question.trim(), 
+          answer, 
+          model: usedModel, 
+          createdAt: admin.firestore.FieldValue.serverTimestamp() 
+        })
+        .catch(e => console.error('History save failed:', e));
     }
 
     res.json({ answer, model: usedModel });
   } catch (err) {
     console.error('Chat error:', err);
-    res.status(500).json({ error: err.message || 'Internal server error' });
+    res.status(500).json({ error: 'An internal error occurred while processing your chat.' });
   }
 });
 
-// ── GET /questions ────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
   { q: 'What is the minimum age to vote in Indian elections?', options: ['16', '18', '21', '25'], correct: 1 },
   { q: 'How many phases did the 2026 Lok Sabha election have?', options: ['5', '6', '7', '9'], correct: 2 },
@@ -137,21 +149,26 @@ const QUIZ_QUESTIONS = [
   { q: 'What system does India use for voting?', options: ['Proportional Representation', 'Single Transferable Vote', 'First Past the Post', 'Approval Voting'], correct: 2 },
 ];
 
+/**
+ * GET /questions
+ * Returns quiz questions without answers.
+ */
 app.get('/questions', (req, res) => {
-  // Return questions without correct answers for client; send separately on submit
   const safeQuestions = QUIZ_QUESTIONS.map(({ q, options }) => ({ q, options }));
   res.json({ questions: safeQuestions });
 });
 
-// ── POST /scores ──────────────────────────────────────────────────────────
+/**
+ * POST /scores
+ * Validates quiz answers and records score in Firestore.
+ */
 app.post('/scores', async (req, res) => {
   try {
     const { uid, answers } = req.body;
     if (!uid || !Array.isArray(answers) || answers.length !== QUIZ_QUESTIONS.length) {
-      return res.status(400).json({ error: 'Invalid payload' });
+      return res.status(400).json({ error: 'Invalid payload. uid and full answers array required.' });
     }
 
-    // Server-side scoring
     let score = 0;
     answers.forEach((ans, i) => {
       if (ans === QUIZ_QUESTIONS[i].correct) score++;
@@ -166,10 +183,9 @@ app.post('/scores', async (req, res) => {
     res.json({ score, totalQuestions: QUIZ_QUESTIONS.length });
   } catch (err) {
     console.error('Score error:', err);
-    res.status(500).json({ error: err.message || 'Internal server error' });
+    res.status(500).json({ error: 'Could not save score.' });
   }
 });
 
-// ── Export ────────────────────────────────────────────────────────────────────
 exports.app = app;
 exports.api = functions.https.onRequest(app);

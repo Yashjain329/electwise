@@ -10,6 +10,10 @@ import { auth, googleProvider } from '../firebase';
 
 const AuthContext = createContext(null);
 
+/**
+ * Provides authentication state and methods to the application.
+ * Handles both popup and redirect flows for Google Sign-In.
+ */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -95,6 +99,10 @@ export function AuthProvider({ children }) {
   );
 }
 
+/**
+ * Custom hook to access authentication context.
+ * @returns {{user: import('firebase/auth').User|null, loading: boolean, signIn: Function, signOut: Function, authError: string|null}}
+ */
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);

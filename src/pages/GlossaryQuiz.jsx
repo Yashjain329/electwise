@@ -46,11 +46,11 @@ function quizReducer(state, action) {
   switch (action.type) {
     case 'SELECT': return { ...state, selected: action.idx };
     case 'NEXT': {
-      const isCorrect = action.idx === questions[state.current].correct;
-      const answers = [...state.answers, { selected: action.idx, correct: questions[state.current].correct }];
+      const isCorrect = action.idx === action.correct;
+      const answers = [...state.answers, { selected: action.idx, correct: action.correct }];
       const score = state.score + (isCorrect ? 1 : 0);
       const next = state.current + 1;
-      if (next >= questions.length) return { ...state, score, answers, done: true, selected: null };
+      if (next >= action.total) return { ...state, score, answers, done: true, selected: null };
       return { ...state, score, answers, current: next, selected: null };
     }
     case 'RESET': return initialState;
@@ -117,10 +117,11 @@ export default function GlossaryQuiz() {
   }, [search]);
 
   const { activeQuestions, q, pct } = useMemo(() => {
-    const active = serverQuestions.length > 0 ? serverQuestions : questions;
+    const active = (serverQuestions && serverQuestions.length > 0) ? serverQuestions : questions;
+    const currentQ = active[state.current] || active[0]; // Fallback to avoid undefined
     return {
       activeQuestions: active,
-      q: active[state.current],
+      q: currentQ,
       pct: Math.round((state.score / active.length) * 100)
     };
   }, [serverQuestions, state]);
@@ -213,7 +214,7 @@ export default function GlossaryQuiz() {
                 </div>
 
                 {state.selected !== null && (
-                  <button onClick={() => dispatch({ type: 'NEXT', idx: state.selected })}
+                  <button onClick={() => dispatch({ type: 'NEXT', idx: state.selected, correct: q.correct, total: activeQuestions.length })}
                     className="btn-primary w-full justify-center">
                     {state.current + 1 < activeQuestions.length ? 'Next Question →' : 'See Results'}
                   </button>

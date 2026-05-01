@@ -8,6 +8,16 @@ import {
   Flame, MessageSquare, Map, BookOpen,
   ArrowRight, Star, TrendingUp, CheckCircle2, Clock
 } from 'lucide-react';
+import { useCallback } from 'react';
+
+const STEPS = ['registration', 'nomination', 'campaigning', 'polling', 'results'];
+const STEP_LABELS = {
+  registration: 'Voter Registration',
+  nomination: 'Candidate Nomination',
+  campaigning: 'Election Campaign',
+  polling: 'Polling Day',
+  results: 'Counting & Results'
+};
 
 function CountUp({ target, duration = 1500 }) {
   const [value, setValue] = useState(0);
@@ -53,7 +63,8 @@ export default function Dashboard() {
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
     try {
       const [progSnap, quizSnap, chatSnap] = await Promise.all([
@@ -72,15 +83,13 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, addToast]);
 
   useEffect(() => {
     document.title = 'My Dashboard — ElectWise';
-    if (user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchData();
-    }
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData();
+  }, [fetchData]);
 
   const stats = useMemo(() => {
     const completedStepsCount = progress?.completedSteps?.length || 0;
@@ -101,9 +110,7 @@ export default function Dashboard() {
 
   const { completedSteps, stepScore, quizScorePoints, chatPoints, democracyScore, streak, latestQuizScore } = stats;
 
-  const steps = ['registration', 'nomination', 'campaigning', 'polling', 'results'];
-  const stepLabels = { registration: 'Voter Registration', nomination: 'Candidate Nomination', campaigning: 'Election Campaign', polling: 'Polling Day', results: 'Counting & Results' };
-  const firstIncomplete = steps.find(s => !completedSteps.includes(s));
+  const firstIncomplete = STEPS.find(s => !completedSteps.includes(s));
 
   if (loading) {
     return (
@@ -202,12 +209,12 @@ export default function Dashboard() {
               <div className="progress-fill" style={{ width: `${(completedSteps.length / 5) * 100}%` }} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-              {steps.map(s => (
+              {STEPS.map(s => (
                 <div key={s} className={`p-3 rounded-xl text-center text-xs font-medium border ${
                   completedSteps.includes(s) ? 'bg-green-50 border-green-200 text-green-800' : 'bg-[#f9f9ff] border-[#e9edff] text-[#43474f]'
                 }`}>
                   {completedSteps.includes(s) ? <CheckCircle2 size={14} className="text-green-500 mx-auto mb-1" /> : <Clock size={14} className="text-[#43474f] mx-auto mb-1" />}
-                  {stepLabels[s]}
+                  {STEP_LABELS[s]}
                 </div>
               ))}
             </div>
@@ -244,7 +251,7 @@ export default function Dashboard() {
                   <h3 className="font-semibold font-serif">Continue Learning</h3>
                 </div>
                 <p className="text-sm text-[#43474f] mb-4">
-                  Your next step: <strong className="text-[#002451]">{stepLabels[firstIncomplete]}</strong>
+                  Your next step: <strong className="text-[#002451]">{STEP_LABELS[firstIncomplete]}</strong>
                 </p>
                 <Link to="/journey" className="btn-primary text-xs px-4 py-2">
                   Resume Journey <ArrowRight size={13} />

@@ -95,7 +95,9 @@ describe('Navbar Component', () => {
     const signInButton = screen.getAllByText(/Sign In with Google/i)[0];
     fireEvent.click(signInButton);
 
-    expect(mockSignIn).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(mockSignIn).toHaveBeenCalled();
+    });
   });
 
   it('calls signOut when sign out button is clicked', async () => {
@@ -111,6 +113,8 @@ describe('Navbar Component', () => {
     const signOutButton = screen.getAllByText(/Sign Out/i)[0];
     fireEvent.click(signOutButton);
 
-    expect(mockSignOut).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(mockSignOut).toHaveBeenCalled();
+    });
   });
 });
