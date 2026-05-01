@@ -28,11 +28,11 @@ A full-stack Election Process Education web application empowering every Indian 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    User Browser                         │
-│          React 19 + Vite + Tailwind CSS v4              │
+┌──────────────────────────────────────────────────────────┐
+│                    User Browser                          │
+│          React 19 + Vite + Tailwind CSS v4               │
 │   Home | Journey | Chat | Timeline | Glossary | Dashboard│
-└────────────────────┬────────────────────────────────────┘
+└────────────────────┬─────────────────────────────────────┘
                      │ HTTPS
           ┌──────────┴──────────┐
           │                     │
