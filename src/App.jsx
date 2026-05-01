@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import { ToastProvider } from './components/Toast';
+import { ThemeProvider } from './hooks/useTheme';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -23,27 +24,29 @@ const PageLoader = () => (
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <BrowserRouter>
-          <Navbar />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/journey" element={<Journey />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/timeline" element={<Timeline />} />
-              <Route path="/glossary" element={<GlossaryQuiz />} />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </Suspense>
-          <Footer />
-        </BrowserRouter>
-      </ToastProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <Navbar />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/journey" element={<Journey />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/timeline" element={<Timeline />} />
+                <Route path="/glossary" element={<GlossaryQuiz />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </Suspense>
+            <Footer />
+          </BrowserRouter>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

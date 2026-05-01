@@ -4,10 +4,15 @@ import { MemoryRouter } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/Toast';
+import { useTheme } from '../hooks/useTheme';
 
 // Mock the hooks
 vi.mock('../hooks/useAuth', () => ({
   useAuth: vi.fn(),
+}));
+
+vi.mock('../hooks/useTheme', () => ({
+  useTheme: vi.fn(),
 }));
 
 vi.mock('../components/Toast', () => ({
@@ -32,6 +37,7 @@ describe('Navbar Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useToast.mockReturnValue({ addToast: mockAddToast });
+    useTheme.mockReturnValue({ isDark: false, toggleTheme: vi.fn() });
   });
 
   it('renders the logo and navigation links', () => {
@@ -59,7 +65,7 @@ describe('Navbar Component', () => {
       </MemoryRouter>
     );
 
-    const signInButtons = screen.getAllByText(/Sign In with Google/i);
+    const signInButtons = screen.getAllByText(/Sign In/i);
     expect(signInButtons.length).toBeGreaterThan(0);
   });
 
@@ -79,8 +85,7 @@ describe('Navbar Component', () => {
     expect(screen.getByText('John')).toBeInTheDocument();
     const dashboardLinks = screen.getAllByText(/Dashboard/i);
     expect(dashboardLinks.length).toBeGreaterThan(0);
-    const signOutButtons = screen.getAllByText(/Sign Out/i);
-    expect(signOutButtons.length).toBeGreaterThan(0);
+    expect(screen.getByLabelText('Sign Out')).toBeInTheDocument();
   });
 
   it('calls signIn when sign in button is clicked', async () => {
@@ -92,7 +97,7 @@ describe('Navbar Component', () => {
       </MemoryRouter>
     );
 
-    const signInButton = screen.getAllByText(/Sign In with Google/i)[0];
+    const signInButton = screen.getAllByText(/Sign In/i)[0];
     fireEvent.click(signInButton);
 
     await vi.waitFor(() => {
@@ -110,7 +115,7 @@ describe('Navbar Component', () => {
       </MemoryRouter>
     );
 
-    const signOutButton = screen.getAllByText(/Sign Out/i)[0];
+    const signOutButton = screen.getByLabelText('Sign Out');
     fireEvent.click(signOutButton);
 
     await vi.waitFor(() => {

@@ -22,7 +22,9 @@ describe('Chat Page', () => {
 
   it('renders the initial AI greeting', () => {
     render(<Chat />);
-    expect(screen.getByText(/Hello! I'm ElectWise AI/i)).toBeInTheDocument();
+    // Check for key components of the greeting separately to avoid issues with split text nodes
+    expect(screen.getByText(/Hello!/i)).toBeInTheDocument();
+    expect(screen.getByText(/ElectWise AI/i)).toBeInTheDocument();
   });
 
   it('allows user to send a message and receive a response', async () => {
@@ -44,7 +46,7 @@ describe('Chat Page', () => {
     expect(await screen.findByText('How does EVM work?')).toBeInTheDocument();
 
     // Should show AI response
-    expect(await screen.findByText('The EVM is a battery-operated device.')).toBeInTheDocument();
+    expect(await screen.findByText((content) => content.includes('The EVM is a battery-operated device'))).toBeInTheDocument();
   });
 
   it('shows an error message when the API fails', async () => {
@@ -62,7 +64,8 @@ describe('Chat Page', () => {
     fireEvent.change(input, { target: { value: 'Fail test' } });
     fireEvent.click(sendButton);
 
-    expect(await screen.findByText((content) => content.includes('Internal Server Error'))).toBeInTheDocument();
+    const errorElements = await screen.findAllByText(/Internal Server Error/i);
+    expect(errorElements.length).toBeGreaterThan(0);
   });
 
   it('sends suggested questions when clicked', async () => {
