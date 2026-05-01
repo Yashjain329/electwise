@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { doc, getDoc, collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/Toast';
 import {
-  Trophy, Flame, MessageSquare, Map, BookOpen,
+  Flame, MessageSquare, Map, BookOpen,
   ArrowRight, Star, TrendingUp, CheckCircle2, Clock
 } from 'lucide-react';
 
@@ -23,7 +23,7 @@ function CountUp({ target, duration = 1500 }) {
     };
     frame.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame.current);
-  }, [target]);
+  }, [target, duration]);
 
   return <span>{value}</span>;
 }
@@ -53,11 +53,6 @@ export default function Dashboard() {
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    document.title = 'My Dashboard — ElectWise';
-    if (user) fetchData();
-  }, [user]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -71,20 +66,40 @@ export default function Dashboard() {
       const msgs = chatSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       setChatHistory(msgs);
       setChatCount(msgs.length);
-    } catch (e) {
+    } catch (err) {
+      console.error('Fetch failed', err);
       addToast('Some data could not be loaded.', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  const completedSteps = progress?.completedSteps || [];
-  const latestQuizScore = quizScore?.score || 0;
-  const stepScore = Math.round((completedSteps.length / 5) * 40);
-  const quizScorePoints = Math.round((latestQuizScore / 10) * 40);
-  const chatPoints = chatCount > 5 ? 20 : chatCount * 4;
-  const democracyScore = stepScore + quizScorePoints + chatPoints;
-  const streak = calcStreak(chatHistory);
+  useEffect(() => {
+    document.title = 'My Dashboard — ElectWise';
+    if (user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchData();
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const stats = useMemo(() => {
+    const completedStepsCount = progress?.completedSteps?.length || 0;
+    const latestQuizScore = quizScore?.score || 0;
+    const sScore = Math.round((completedStepsCount / 5) * 40);
+    const qScorePoints = Math.round((latestQuizScore / 10) * 40);
+    const cPoints = chatCount > 5 ? 20 : chatCount * 4;
+    return {
+      completedSteps: progress?.completedSteps || [],
+      stepScore: sScore,
+      quizScorePoints: qScorePoints,
+      chatPoints: cPoints,
+      democracyScore: sScore + qScorePoints + cPoints,
+      streak: calcStreak(chatHistory),
+      latestQuizScore
+    };
+  }, [progress, quizScore, chatCount, chatHistory]);
+
+  const { completedSteps, stepScore, quizScorePoints, chatPoints, democracyScore, streak, latestQuizScore } = stats;
 
   const steps = ['registration', 'nomination', 'campaigning', 'polling', 'results'];
   const stepLabels = { registration: 'Voter Registration', nomination: 'Candidate Nomination', campaigning: 'Election Campaign', polling: 'Polling Day', results: 'Counting & Results' };

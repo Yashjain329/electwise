@@ -3,7 +3,6 @@ import { Send, Bot, User, Lightbulb, AlertCircle, RefreshCw } from 'lucide-react
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../components/Toast';
 
 const suggestions = [
   'How do I register to vote in India?',
@@ -13,18 +12,7 @@ const suggestions = [
   'How are election results counted?',
 ];
 
-const SYSTEM_PROMPT = `You are ElectWise, a civic education assistant for Indian elections. Answer questions about election processes, voter rights, ECI procedures, and democratic participation in India. Be clear, factual, and concise. Use bullet points where appropriate. If asked anything unrelated, politely redirect to election topics.`;
 
-// Current Gemini models in priority order (updated April 2026)
-const MODELS = [
-  'gemini-2.0-flash',
-  'gemini-2.0-flash-lite',
-  'gemini-1.5-flash-latest',
-  'gemini-1.5-flash-8b-latest',
-  'gemini-1.5-pro-latest',
-];
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function callGemini(question, userUid) {
   const apiUrl = `${import.meta.env.VITE_API_URL}/chat`;
@@ -45,7 +33,7 @@ async function callGemini(question, userUid) {
     return { text: data.answer, model: data.model };
   } catch (e) {
     if (e.name === 'TypeError' && (e.message.includes('fetch') || e.message.includes('network'))) {
-      throw new Error('Network error. Please check your internet connection or verify the backend is deployed.');
+      throw new Error('Network error. Please check your internet connection or verify the backend is deployed.', { cause: e });
     }
     throw e;
   }
@@ -53,7 +41,6 @@ async function callGemini(question, userUid) {
 
 export default function Chat() {
   const { user } = useAuth();
-  const { addToast } = useToast();
   const [messages, setMessages] = useState([
     {
       role: 'ai',

@@ -1,6 +1,4 @@
-import { useReducer, useState, useEffect } from 'react';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase';
+import { useReducer, useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/Toast';
 import { Search, BookOpen, CheckCircle2, XCircle, RotateCcw, Share2, Trophy } from 'lucide-react';
@@ -67,27 +65,20 @@ export default function GlossaryQuiz() {
   const [state, dispatch] = useReducer(quizReducer, initialState);
 
   const [serverQuestions, setServerQuestions] = useState([]);
-  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
     document.title = 'Glossary & Quiz — ElectWise';
     fetch(`${import.meta.env.VITE_API_URL}/questions`)
       .then(res => res.json())
       .then(data => {
-        setServerQuestions(data.questions);
-        setFetching(false);
+        setServerQuestions(data.questions || data);
       })
       .catch(() => {
         setServerQuestions(questions); // Fallback to local
-        setFetching(false);
       });
   }, []);
 
-  useEffect(() => {
-    if (state.done) saveScore();
-  }, [state.done]);
-
-  const saveScore = async () => {
+  const saveScore = useCallback(async () => {
     if (!user) return;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/scores`, {
@@ -95,12 +86,17 @@ export default function GlossaryQuiz() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: user.uid, answers: state.answers.map(a => a.selected) })
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error('Save failed');
       addToast(`Score saved! You got ${state.score}/10.`, 'success');
-    } catch {
+    } catch (err) {
+      console.error('Score save failed', err);
       addToast('Could not save your score.', 'error');
     }
-  };
+  }, [user, state.answers, state.score, addToast]);
+
+  useEffect(() => {
+    if (state.done) saveScore();
+  }, [state.done, saveScore]);
 
   const handleShare = () => {
     const text = `I scored ${state.score}/10 on the ElectWise Civic Quiz! 🗳️ Test your knowledge at electwise.app`;
@@ -112,14 +108,22 @@ export default function GlossaryQuiz() {
     }
   };
 
-  const filtered = glossaryTerms.filter(t =>
-    t.term.toLowerCase().includes(search.toLowerCase()) ||
-    t.def.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    const s = search.toLowerCase();
+    return glossaryTerms.filter(t =>
+      t.term.toLowerCase().includes(s) ||
+      t.def.toLowerCase().includes(s)
+    );
+  }, [search]);
 
-  const activeQuestions = serverQuestions.length > 0 ? serverQuestions : questions;
-  const q = activeQuestions[state.current];
-  const pct = Math.round((state.score / activeQuestions.length) * 100);
+  const { activeQuestions, q, pct } = useMemo(() => {
+    const active = serverQuestions.length > 0 ? serverQuestions : questions;
+    return {
+      activeQuestions: active,
+      q: active[state.current],
+      pct: Math.round((state.score / active.length) * 100)
+    };
+  }, [serverQuestions, state]);
 
   return (
     <main className="page-wrapper">

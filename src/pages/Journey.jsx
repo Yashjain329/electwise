@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/Toast';
 import {
-  ChevronDown, ChevronUp, CheckCircle2, Lock, ClipboardList,
+  ChevronDown, ChevronUp, CheckCircle2, ClipboardList,
   UserCheck, FileText, Building2, BarChart3, Trophy
 } from 'lucide-react';
 
@@ -136,27 +136,36 @@ export default function Journey() {
   const [completedSteps, setCompletedSteps] = useState([]);
   const [confettiFired, setConfettiFired] = useState(false);
 
-  useEffect(() => {
-    document.title = 'Journey Map — ElectWise';
-    if (user) loadProgress();
-  }, [user]);
-
-  useEffect(() => {
-    if (completedSteps.length === steps.length && !confettiFired) {
-      fireConfetti();
-      setConfettiFired(true);
-    }
-  }, [completedSteps]);
-
-  const loadProgress = async () => {
+  const fireConfetti = async () => {
     try {
-      const ref = doc(db, 'userProgress', user.uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) setCompletedSteps(snap.data().completedSteps || []);
-    } catch (e) {
-      addToast('Could not load progress.', 'error');
+      const { default: confetti } = await import('canvas-confetti');
+      confetti({ particleCount: 180, spread: 80, origin: { y: 0.6 }, colors: ['#002451', '#fc8b19', '#ffffff'] });
+    } catch (err) {
+      console.error('Confetti failed', err);
     }
   };
+
+  useEffect(() => {
+    document.title = 'Journey Map — ElectWise';
+    const loadProgress = async () => {
+      try {
+        const ref = doc(db, 'userProgress', user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) setCompletedSteps(snap.data().completedSteps || []);
+      } catch (error) {
+        console.error('Progress load failed', error);
+        addToast('Could not load progress.', 'error');
+      }
+    };
+    if (user) loadProgress();
+  }, [user, addToast]);
+
+  useEffect(() => {
+    if (completedSteps.length === steps.length && steps.length > 0 && !confettiFired) {
+      fireConfetti();
+      setTimeout(() => setConfettiFired(true), 0);
+    }
+  }, [completedSteps, confettiFired]);
 
   const markComplete = async (stepId) => {
     if (!user || completedSteps.includes(stepId)) return;
@@ -165,17 +174,12 @@ export default function Journey() {
     try {
       const ref = doc(db, 'userProgress', user.uid);
       await setDoc(ref, { completedSteps: updated, updatedAt: serverTimestamp() }, { merge: true });
-    } catch (e) {
+    } catch (error) {
+      console.error('Progress save failed', error);
       addToast('Could not save progress.', 'error');
     }
   };
 
-  const fireConfetti = async () => {
-    try {
-      const { default: confetti } = await import('canvas-confetti');
-      confetti({ particleCount: 180, spread: 80, origin: { y: 0.6 }, colors: ['#002451', '#fc8b19', '#ffffff'] });
-    } catch {}
-  };
 
   const toggle = (id) => {
     setExpanded(prev => {
