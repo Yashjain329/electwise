@@ -171,4 +171,5 @@ app.post('/scores', async (req, res) => {
 });
 
 // ── Export ────────────────────────────────────────────────────────────────────
+exports.app = app;
 exports.api = functions.https.onRequest(app);
