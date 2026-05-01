@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import GlossaryQuiz from '../pages/GlossaryQuiz';
@@ -52,7 +52,9 @@ describe('GlossaryQuiz Page', () => {
 
     const searchInput = screen.getByPlaceholderText('Search terms...');
     // "Electoral Roll" is unique enough
-    fireEvent.change(searchInput, { target: { value: 'Electoral Roll' } });
+    act(() => {
+      fireEvent.change(searchInput, { target: { value: 'Electoral Roll' } });
+    });
 
     expect(screen.getByText('Electoral Roll')).toBeInTheDocument();
     expect(screen.queryByText('NOTA')).not.toBeInTheDocument();

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -98,7 +98,9 @@ describe('Navbar Component', () => {
     );
 
     const signInButton = screen.getAllByText(/Sign In/i)[0];
-    fireEvent.click(signInButton);
+    await act(async () => {
+      fireEvent.click(signInButton);
+    });
 
     await vi.waitFor(() => {
       expect(mockSignIn).toHaveBeenCalled();

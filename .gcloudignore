@@ -1,0 +1,6 @@
+.gcloudignore
+.git
+.gitignore
+node_modules
+# Do not ignore dist, as it is needed for the Dockerfile
+!dist
