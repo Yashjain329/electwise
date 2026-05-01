@@ -26,8 +26,8 @@ const MODELS = [
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function callGemini(question, userUid, projectId) {
-  const apiUrl = `https://us-central1-${projectId}.cloudfunctions.net/api/chat`;
+async function callGemini(question, userUid) {
+  const apiUrl = `${import.meta.env.VITE_API_URL}/chat`;
 
   try {
     const res = await fetch(apiUrl, {
@@ -84,11 +84,9 @@ export default function Chat() {
     setLoading(true);
 
     try {
-      const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
       const { text: answer, model } = await callGemini(
         question,
-        user?.uid,
-        projectId
+        user?.uid
       );
       const aiMsg = { role: 'ai', text: answer };
       setMessages((prev) => [...prev, aiMsg]);

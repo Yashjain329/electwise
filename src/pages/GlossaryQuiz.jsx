@@ -66,8 +66,21 @@ export default function GlossaryQuiz() {
   const [search, setSearch] = useState('');
   const [state, dispatch] = useReducer(quizReducer, initialState);
 
+  const [serverQuestions, setServerQuestions] = useState([]);
+  const [fetching, setFetching] = useState(true);
+
   useEffect(() => {
     document.title = 'Glossary & Quiz — ElectWise';
+    fetch(`${import.meta.env.VITE_API_URL}/questions`)
+      .then(res => res.json())
+      .then(data => {
+        setServerQuestions(data.questions);
+        setFetching(false);
+      })
+      .catch(() => {
+        setServerQuestions(questions); // Fallback to local
+        setFetching(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -77,9 +90,12 @@ export default function GlossaryQuiz() {
   const saveScore = async () => {
     if (!user) return;
     try {
-      await setDoc(doc(db, 'quizScores', user.uid), {
-        score: state.score, totalQuestions: questions.length, completedAt: serverTimestamp()
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/scores`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid: user.uid, answers: state.answers.map(a => a.selected) })
       });
+      if (!res.ok) throw new Error();
       addToast(`Score saved! You got ${state.score}/10.`, 'success');
     } catch {
       addToast('Could not save your score.', 'error');
@@ -101,8 +117,9 @@ export default function GlossaryQuiz() {
     t.def.toLowerCase().includes(search.toLowerCase())
   );
 
-  const q = questions[state.current];
-  const pct = Math.round((state.score / questions.length) * 100);
+  const activeQuestions = serverQuestions.length > 0 ? serverQuestions : questions;
+  const q = activeQuestions[state.current];
+  const pct = Math.round((state.score / activeQuestions.length) * 100);
 
   return (
     <main className="page-wrapper">
@@ -161,11 +178,11 @@ export default function GlossaryQuiz() {
               <div className="card p-6">
                 {/* Progress */}
                 <div className="flex justify-between text-xs text-[#43474f] mb-2">
-                  <span>Question {state.current + 1} of {questions.length}</span>
+                  <span>Question {state.current + 1} of {activeQuestions.length}</span>
                   <span>Score: {state.score}</span>
                 </div>
                 <div className="progress-bar mb-6">
-                  <div className="progress-fill" style={{ width: `${((state.current) / questions.length) * 100}%` }} />
+                  <div className="progress-fill" style={{ width: `${((state.current) / activeQuestions.length) * 100}%` }} />
                 </div>
 
                 <h3 className="font-semibold text-[#0d1b35] text-lg font-serif mb-5">{q.q}</h3>
@@ -194,7 +211,7 @@ export default function GlossaryQuiz() {
                 {state.selected !== null && (
                   <button onClick={() => dispatch({ type: 'NEXT', idx: state.selected })}
                     className="btn-primary w-full justify-center">
-                    {state.current + 1 < questions.length ? 'Next Question →' : 'See Results'}
+                    {state.current + 1 < activeQuestions.length ? 'Next Question →' : 'See Results'}
                   </button>
                 )}
               </div>
@@ -206,7 +223,7 @@ export default function GlossaryQuiz() {
                 </div>
                 <h3 className="text-2xl font-bold font-serif mb-2">Quiz Complete!</h3>
                 <div className="text-6xl font-bold text-[#002451] font-serif my-4 animate-count-up">
-                  {state.score}<span className="text-2xl text-[#43474f]">/{questions.length}</span>
+                  {state.score}<span className="text-2xl text-[#43474f]">/{activeQuestions.length}</span>
                 </div>
                 <div className="w-full max-w-xs mx-auto mb-4">
                   <div className="progress-bar">
