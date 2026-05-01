@@ -50,9 +50,9 @@ const howItWorks = [
 ];
 
 const stats = [
-  { icon: Users, value: '912M+', label: 'Registered Voters in India' },
-  { icon: BarChart3, value: '65%+', label: 'Average Voter Turnout' },
-  { icon: CheckCircle2, value: '28', label: 'States & Union Territories' },
+  { icon: Users, value: '968M+', label: 'Registered Voters in India' },
+  { icon: BarChart3, value: '66%+', label: 'Average Voter Turnout' },
+  { icon: CheckCircle2, value: '36', label: 'States & Union Territories' },
 ];
 
 export default function Home() {
@@ -80,7 +80,7 @@ export default function Home() {
         </div>
         <div className="max-w-4xl mx-auto text-center relative">
           <span className="inline-block px-4 py-1.5 rounded-full bg-[#fc8b19]/20 text-[#fc8b19] text-xs font-semibold uppercase tracking-widest mb-6 animate-fade-in">
-            Hack2Skill PromptWars 2024
+            Hack2Skill PromptWars 2026
           </span>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6 animate-fade-up font-serif">
             Empowering <span className="text-[#fc8b19]">Every Citizen</span><br />

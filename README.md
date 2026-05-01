@@ -1,8 +1,8 @@
 # ElectWise — Civic Education Platform
-### 🏆 Hack2Skill Virtual PromptWars Hackathon 2024
+### 🏆 Hack2Skill Virtual PromptWars Hackathon 2026
 
 > **Live Demo:** [https://electwise-frontend-pnvu67pqfq-uc.a.run.app](https://electwise-frontend-pnvu67pqfq-uc.a.run.app)  
-> [![Hack2Skill](https://img.shields.io/badge/Hack2Skill-PromptWars%202024-orange)](https://hack2skill.com)
+> [![Hack2Skill](https://img.shields.io/badge/Hack2Skill-PromptWars%202026-orange)](https://hack2skill.com)
 
 A full-stack Election Process Education web application empowering every Indian citizen with knowledge about voter rights, election procedures, and democratic participation.
 

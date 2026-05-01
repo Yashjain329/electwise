@@ -44,7 +44,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs">
-          <span>© 2024 ElectWise. Empowering informed civic participation.</span>
+          <span>© 2026 ElectWise. Empowering informed civic participation.</span>
           <span className="text-[#fc8b19]">Built for Hack2Skill PromptWars Hackathon</span>
         </div>
       </div>

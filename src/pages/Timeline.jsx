@@ -4,35 +4,35 @@ import { Calendar, Clock, Flag } from 'lucide-react';
 
 const nationalPhases = [
   ['Phase', 'Start', 'End'],
-  ['Voter Registration', new Date(2024, 0, 1), new Date(2024, 1, 28)],
-  ['Election Announcement', new Date(2024, 2, 1), new Date(2024, 2, 15)],
-  ['Nomination Period', new Date(2024, 2, 16), new Date(2024, 2, 31)],
-  ['Campaign Period', new Date(2024, 3, 1), new Date(2024, 3, 30)],
-  ['Polling (Phase 1)', new Date(2024, 3, 19), new Date(2024, 3, 19)],
-  ['Polling (Phase 7)', new Date(2024, 4, 1), new Date(2024, 4, 1)],
-  ['Vote Counting & Results', new Date(2024, 5, 4), new Date(2024, 5, 5)],
+  ['Voter Registration', new Date(2026, 0, 1), new Date(2026, 1, 28)],
+  ['Election Announcement', new Date(2026, 2, 1), new Date(2026, 2, 15)],
+  ['Nomination Period', new Date(2026, 2, 16), new Date(2026, 2, 31)],
+  ['Campaign Period', new Date(2026, 3, 1), new Date(2026, 3, 30)],
+  ['Polling (Phase 1)', new Date(2026, 3, 19), new Date(2026, 3, 19)],
+  ['Polling (Phase 7)', new Date(2026, 4, 1), new Date(2026, 4, 1)],
+  ['Vote Counting & Results', new Date(2026, 5, 4), new Date(2026, 5, 5)],
 ];
 
 const statePhases = [
   ['Phase', 'Start', 'End'],
-  ['Voter Roll Update', new Date(2024, 6, 1), new Date(2024, 7, 15)],
-  ['Election Schedule Announced', new Date(2024, 8, 1), new Date(2024, 8, 10)],
-  ['Nomination Filing', new Date(2024, 8, 11), new Date(2024, 8, 25)],
-  ['Scrutiny & Withdrawal', new Date(2024, 8, 26), new Date(2024, 8, 30)],
-  ['Campaign Period', new Date(2024, 9, 1), new Date(2024, 9, 20)],
-  ['Polling Day', new Date(2024, 9, 21), new Date(2024, 9, 21)],
-  ['Counting & Declaration', new Date(2024, 9, 24), new Date(2024, 9, 24)],
+  ['Voter Roll Update', new Date(2026, 6, 1), new Date(2026, 7, 15)],
+  ['Election Schedule Announced', new Date(2026, 8, 1), new Date(2026, 8, 10)],
+  ['Nomination Filing', new Date(2026, 8, 11), new Date(2026, 8, 25)],
+  ['Scrutiny & Withdrawal', new Date(2026, 8, 26), new Date(2026, 8, 30)],
+  ['Campaign Period', new Date(2026, 9, 1), new Date(2026, 9, 20)],
+  ['Polling Day', new Date(2026, 9, 21), new Date(2026, 9, 21)],
+  ['Counting & Declaration', new Date(2026, 9, 24), new Date(2026, 9, 24)],
 ];
 
 const localPhases = [
   ['Phase', 'Start', 'End'],
-  ['Ward Delimitation', new Date(2024, 1, 1), new Date(2024, 2, 15)],
-  ['Voter List Revision', new Date(2024, 2, 16), new Date(2024, 3, 15)],
-  ['Reservation of Seats', new Date(2024, 3, 16), new Date(2024, 3, 30)],
-  ['Nomination Period', new Date(2024, 4, 1), new Date(2024, 4, 15)],
-  ['Campaign Period', new Date(2024, 4, 16), new Date(2024, 5, 14)],
-  ['Polling Day', new Date(2024, 5, 15), new Date(2024, 5, 15)],
-  ['Counting & Results', new Date(2024, 5, 18), new Date(2024, 5, 18)],
+  ['Ward Delimitation', new Date(2026, 1, 1), new Date(2026, 2, 15)],
+  ['Voter List Revision', new Date(2026, 2, 16), new Date(2026, 3, 15)],
+  ['Reservation of Seats', new Date(2026, 3, 16), new Date(2026, 3, 30)],
+  ['Nomination Period', new Date(2026, 4, 1), new Date(2026, 4, 15)],
+  ['Campaign Period', new Date(2026, 4, 16), new Date(2026, 5, 14)],
+  ['Polling Day', new Date(2026, 5, 15), new Date(2026, 5, 15)],
+  ['Counting & Results', new Date(2026, 5, 18), new Date(2026, 5, 18)],
 ];
 
 const tabs = [
@@ -104,7 +104,7 @@ export default function Timeline() {
           {/* Chart */}
           <div ref={containerRef} className="card p-4 mb-10 overflow-hidden">
             <h2 className="text-lg font-semibold font-serif text-[#0d1b35] mb-4 px-2">
-              {tabs.find(t => t.id === activeTab)?.label} — 2024 Election Cycle
+              {tabs.find(t => t.id === activeTab)?.label} — 2026 Election Cycle
             </h2>
             <Chart
               chartType="Timeline"

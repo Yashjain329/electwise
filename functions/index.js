@@ -126,7 +126,7 @@ app.post('/chat', async (req, res) => {
 // ── GET /questions ────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
   { q: 'What is the minimum age to vote in Indian elections?', options: ['16', '18', '21', '25'], correct: 1 },
-  { q: 'How many phases did the 2024 Lok Sabha election have?', options: ['5', '6', '7', '9'], correct: 2 },
+  { q: 'How many phases did the 2026 Lok Sabha election have?', options: ['5', '6', '7', '9'], correct: 2 },
   { q: 'Which form is used to register as a new voter in India?', options: ['Form 1', 'Form 6', 'Form 8', 'Form 12'], correct: 1 },
   { q: 'What does NOTA stand for?', options: ['None of The Applicants', 'None of the Above', 'Not One True Answer', 'No Other Than Abstain'], correct: 1 },
   { q: 'The Model Code of Conduct is enforced by which body?', options: ['Supreme Court', 'President of India', 'Election Commission of India', 'Ministry of Law'], correct: 2 },
